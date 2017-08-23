@@ -1,0 +1,8 @@
+# IDE configurations
+.c9
+.idea
+.vscode
+
+# built files
+/dist
+nimcache
