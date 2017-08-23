@@ -21,8 +21,5 @@ proc promptResponse* (msg: string): string =
   echo "\n⁉  ".fgGreen & msg & "\n"
   result = stdin.readLine.strip
 
-proc argCheck* (args: seq[string], req: int, msg: string): int =
-  if args.len >= req:
-    return 0
-  else:
-    fail msg
+proc argCheck* (args: seq[string], req: int, msg: string) {.discardable.} =
+  if args.len < req: fail msg

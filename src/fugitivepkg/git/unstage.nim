@@ -2,7 +2,7 @@ include ../base
 
 proc unstage* (args: Arguments, opts: Options) =
   if not isGitRepo(): fail NOT_REPO
-  discard argCheck(args, 1, "File names required.")
+  argCheck(args, 1, "File names required.")
 
   let (res, code) = execCmdEx "git reset HEAD " & args.join(" ")
 

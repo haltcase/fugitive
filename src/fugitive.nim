@@ -50,7 +50,7 @@ proc parseInput (): Input =
 proc main (command: string, args: Arguments, opts: Options): int =
   case command:
   of "age":
-    discard argCheck(args, 1, NO_NAME)
+    argCheck(args, 1, NO_NAME)
     print "$1 profile age: $2" % [args[0], waitFor getUserAge args[0]]
   of "alias": alias(args, opts)
   of "install": install(args, opts)
@@ -58,7 +58,7 @@ proc main (command: string, args: Arguments, opts: Options): int =
   of "mirror", "clone": mirror(args, opts)
   of "open": open(args, opts)
   of "repos":
-    discard argCheck(args, 1, NO_NAME)
+    argCheck(args, 1, NO_NAME)
     let count = waitFor getRepoCount args[0]
     print "$1 has $2 public repositories" % [args[0], $count]
   of "summary": summary(args, opts)
