@@ -22,8 +22,17 @@ import fugitivepkg/git/[
   unstage
 ]
 
+template getPkgPath (): string =
+  instantiationInfo(fullPaths = true).filename.parentDir.parentDir
+
+when defined(windows) and not defined(cross):
+  const pkgPath = getPkgPath() / "fugitive.nimble"
+else:
+  const pkgPath = getPkgPath() & "/fugitive.nimble"
+
 const version =
-  staticRead(".." / "fugitive.nimble")
+  pkgPath
+  .staticRead
   .splitLines()[0]
   .split("=")[1]
   .strip(chars = {'"'} + Whitespace)
