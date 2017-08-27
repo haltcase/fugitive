@@ -2,14 +2,14 @@
 
 > Simple command line tool to make git more intuitive, along with useful GitHub addons.
 
-_fugitive_ provides new or alternative commands to use with git, and also
+fugitive provides new or alternative commands to use with git, and also
 adds a few helpful tools for GitHub repositories.
 
 It's similar to [`git-extras`][gitextras] but is designed to be more
 portable. `git-extras` is written entirely as a set of shell scripts,
 which means platform support outside Unix is at best hit or miss.
 
-On the other hand, _fugitive_ is written in [Nim][nim] to allow for better
+On the other hand, fugitive is written in [Nim][nim] to allow for better
 portability. Other benefits are that Nim is super fast, flexible, and more
 readable than the often cryptic bash syntax.
 
@@ -84,7 +84,7 @@ unlock
 unstage
 ```
 
-Existing aliases are safe as _fugitive_ will not override them unless
+Existing aliases are safe as fugitive will not override them unless
 the `--override` ( or `-o` ) flag is explicitly passed.
 
 If you want to remove these installed aliases, use `fugitive uninstall`.
@@ -95,6 +95,24 @@ be removed.
 `fugitive clone` is possible it can't be aliased as a git subcommand.
 Therefore `fugitive mirror` is the main command and the one that will
 be attached to git, while `clone` is just an alias for convenience.
+
+## building
+
+To build fugitive from source you'll need to have [Nim][nim] installed,
+and should also have [Nimble][nimble], Nim's package manager.
+
+> currently, building should work on most platforms. cross-compilation
+  (building for other platforms than the current one) is only tested on
+  a unix system
+
+1. Clone the repo: `git clone https://github.com/citycide/fugitive.git`
+2. Move into the newly cloned directory: `cd fugitive`
+3. Install dependencies: `nimble install`
+4. Compile for your platform: `nimble build`
+5. Compile for other platforms: run `nimble tasks` for available commands
+6. Compile all release versions: `nimble release`
+   - this will generate and package prebuilt binaries for all supported
+     cross-compile targets
 
 ## contributing
 
