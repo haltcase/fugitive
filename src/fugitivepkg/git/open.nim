@@ -21,8 +21,6 @@ const
   """
 
 proc open* (args: Arguments, opts: Options) =
-  # TODO: open repo in cwd if no args are provided
-
   if args.len < 1:
     if isGitRepo():
       let (res, code) = execCmdEx "git remote -v"
