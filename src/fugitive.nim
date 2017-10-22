@@ -90,4 +90,12 @@ when isMainModule:
     echo help
     quit 0
 
+  # check whether git is accessible
+  let (res, code) = execCmdEx "git --version"
+  if code != 0 or res.strip == "":
+    fail """
+    git doesn't seem to be installed. Please install it or
+    ensure that it has been added to your PATH.
+    """.strip
+
   quit main(args[0], args[1..args.high], opts)
