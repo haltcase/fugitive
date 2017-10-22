@@ -13,8 +13,7 @@ const
 
 proc parseToUnits [T] (duration: T): seq[string] =
   result = @[]
-  let rounded = duration.float64.round.int
-  var remainder = rounded * 1000
+  var remainder = (duration.float64 * 1000).round.int
   for i, unit in unitValues:
     let count = remainder div unit
     if count == 0: continue
