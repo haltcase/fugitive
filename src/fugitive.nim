@@ -40,14 +40,19 @@ const version =
 proc parseInput (): Input =
   var args: seq[string] = @[]
   var opts = initTable[string, string]()
+  var idx = -1
   for kind, key, val in getopt():
-    of cmdArgument: args.add key.toLowerAscii
+    inc idx
     case kind
+    of cmdArgument: args.add(key.toLowerAscii)
     of cmdLongOption, cmdShortOption:
       case key
       of "help", "h":
-        echo HELP
-        quit 0
+        if idx == 0:
+          echo help
+          quit 0
+        else:
+          opts["help"] = val
       of "version", "v":
         echo "fugitive v" & version
         quit 0

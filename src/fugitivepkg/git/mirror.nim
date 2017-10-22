@@ -28,8 +28,8 @@ proc parseDirArgs (opts: Options): seq[string] =
   else:
     result = @[]
 
-proc mirror* (args: Arguments, opts: Options) {.noReturn.} =
-  if args.len < 1:
+proc mirror* (args: Arguments, opts: Options) =
+  if "help" in opts or args.len < 1:
     echo "\n" & usageMessage
     quit 0
 
