@@ -64,16 +64,16 @@ proc parseInput (): Input =
 proc main (command: string, args: Arguments, opts: Options): int =
   case command
   of "age":
-    print "$1 profile age: $2" % [args[0], waitFor getUserAge args[0]]
     argCheck(args, 1, errNoName)
+    print "$1 profile age: $2" % [args[0], waitFor args[0].getUserAge]
   of "alias": alias(args, opts)
   of "install": install(args, opts)
   of "lock": lock(args, opts)
   of "mirror", "clone": mirror(args, opts)
   of "open": open(args, opts)
   of "repos":
-    let count = waitFor getRepoCount args[0]
     argCheck(args, 1, errNoName)
+    let count = waitFor args[0].getRepoCount
     print "$1 has $2 public repositories" % [args[0], $count]
   of "summary": summary(args, opts)
   of "undo": undo(args, opts)
