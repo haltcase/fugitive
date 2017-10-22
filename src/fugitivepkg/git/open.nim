@@ -5,7 +5,7 @@ import browsers
 from ../github import resolveRepoURL
 
 const
-  USAGE = """
+  usageMessage = """
   Usage: fugitive open <repo>
 
   Open the specified repository in your browser. Allows for
@@ -34,7 +34,7 @@ proc open* (args: Arguments, opts: Options) =
         .openDefaultBrowser
         quit 0
     else:
-      echo "\n" & USAGE
+      echo "\n" & usageMessage
       quit 0
 
   when defined linux:

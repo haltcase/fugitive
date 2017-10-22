@@ -3,7 +3,7 @@ include ../base
 from ./alias import createAlias
 
 const
-  INFO = """
+  helpMessage = """
   This will alias various fugitive commands as git subcommands,
   which means for example that these would be equivalent:
 
@@ -14,7 +14,7 @@ const
   Nothing will be overridden unless you pass the --override (-o) flag.
   """.strip
 
-  COMMANDS* = [
+  commandsToAlias* = [
     "alias",
     "lock",
     "mirror",
@@ -27,7 +27,7 @@ const
 
 proc install* (args: Arguments, opts: Options) =
   let noPrompt = "y" in opts or "force" in opts
-  if not noPrompt and not prompt(INFO):
+  if not noPrompt and not prompt(helpMessage):
     print "Install cancelled."
     quit 0
 
@@ -41,7 +41,7 @@ proc install* (args: Arguments, opts: Options) =
       This will override existing aliases, possibly from other tools.
       """.strip
 
-  for _, command in COMMANDS:
+  for command in commandsToAlias:
     let value = "!fugitive " & command
     let (existing, _) = execCmdEx "git config --global alias." & command
     let stripped = existing.strip

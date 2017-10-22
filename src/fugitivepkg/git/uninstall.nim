@@ -1,20 +1,20 @@
 include ../base
 
 from ./alias import removeAlias
-from ./install import COMMANDS
+from ./install import commandsToAlias
 
 const
-  INFO = """
+  helpMessage = """
   This will remove fugitive commands as git aliases. Existing aliases
   that were not set by fugitive will be unaffected.
   """.strip
 
 proc uninstall* (args: Arguments, opts: Options) =
-  if not prompt(INFO):
+  if not prompt(helpMessage):
     print "Uninstall cancelled."
     quit 0
 
-  for _, command in COMMANDS:
+  for command in commandsToAlias:
     let value = "!fugitive " & command
     let (existing, _) = execCmdEx "git config --global alias." & command
     let stripped = existing.strip

@@ -13,12 +13,12 @@ type
   CmdExResult = tuple[output: TaintedString, exitCode: int]
 
 const
-  CREATE = "git config --global alias.\"$1\" \"$2\""
-  REMOVE = "git config --global --unset alias.$1"
-  LIST_ALL = "git config --list"
+  cmdCreateAlias = "git config --global alias.\"$1\" \"$2\""
+  cmdRemoveAlias = "git config --global --unset alias.$1"
+  cmdListAliases = "git config --list"
 
 proc getAliasList (pred: (v: string) -> bool = (v: string) => true): AliasList =
-  let (res, _) = execCmdEx LIST_ALL
+  let (res, _) = execCmdEx cmdListAliases
   let filtered = filter(res.splitLines, v => v.startsWith("alias.") and pred(v))
 
   if filtered.len == 0:
@@ -50,10 +50,10 @@ proc buildRows (pairs: seq[AliasPair], longest: Longest): seq[string] =
     ]
 
 proc createAlias* (name, command: string): CmdExResult =
-  result = execCmdEx CREATE % [name, command]
+  result = execCmdEx cmdCreateAlias % [name, command]
 
 proc removeAlias* (name: string): CmdExResult =
-  result = execCmdEx REMOVE % [name]
+  result = execCmdEx cmdRemoveAlias % [name]
 
 proc alias* (args: Arguments, opts: Options) =
   case args.len

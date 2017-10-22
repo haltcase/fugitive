@@ -5,7 +5,7 @@ import os
 from ../github import resolveRepoURL
 
 const
-  USAGE = """
+  usageMessage = """
   Usage: fugitive mirror <...repos>
 
   Wrapper around `git clone` allowing for useful GitHub shorhands.
@@ -31,6 +31,7 @@ proc parseDirArgs (opts: Options): seq[string] =
 proc mirror* (args: Arguments, opts: Options) {.noReturn.} =
   if args.len < 1:
     echo "\n" & USAGE
+    echo "\n" & usageMessage
     quit 0
 
   let dirs = parseDirArgs(opts)

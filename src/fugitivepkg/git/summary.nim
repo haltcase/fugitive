@@ -4,13 +4,17 @@ import os
 import ospaths
 import sequtils
 
-const GET_AGE = """
-git rev-list HEAD --pretty=oneline --max-parents=0 --format="%ar"
-"""
+const
+  cmdGetAge = """
+  git rev-list HEAD --pretty="format: %ar" --max-parents=0
+  """
+  cmdGetCreatedDate = """
+  git rev-list HEAD --pretty="format: %ai" --max-parents=0
+  """
+  cmdGetActiveDays = """
+  git log --pretty="format: %ai"
+  """
 
-const GET_DAYS = """
-git log --pretty="format: %ai" | cut -d " " -f 2
-"""
 
 proc getActiveDays (): int =
   let (res, code) = execCmdEx GET_DAYS
@@ -37,7 +41,7 @@ proc getRepoAge (): string =
   result = if lines.len > 1: lines[1] else: lines[0]
 
 proc summary* (args: Arguments, opts: Options) =
-  if not isGitRepo(): fail NOT_REPO
+  if not isGitRepo(): fail errNotRepo
 
   print "Project summary ->"
   echo "  project   : " & getRepoName()

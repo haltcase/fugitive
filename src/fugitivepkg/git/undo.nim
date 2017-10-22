@@ -1,7 +1,7 @@
 include ../base
 
 proc undo* (args: Arguments, opts: Options) =
-  if not isGitRepo(): fail NOT_REPO
+  if not isGitRepo(): fail errNotRepo
   let num = if args.len >= 1: args[0] else: ""
   let strategy = if "hard" in opts: "hard" else: "soft"
   let (res, code) = execCmdEx "git reset --" & strategy & " HEAD^" & num

@@ -1,11 +1,11 @@
 include ../base
 
 const
-  LOCK = "git update-index --skip-worktree $1"
+  cmdLockFile = "git update-index --skip-worktree $1"
 
 proc lock* (args: Arguments, opts: Options) =
   if not isGitRepo():
-    fail NOT_REPO
+    fail errNotRepo
 
   if args.len < 1:
     fail "File name(s) must be provided."
