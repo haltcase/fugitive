@@ -1,8 +1,11 @@
 include ../base
 
+import future
 import os
 import ospaths
 import sequtils
+import strutils
+import times
 
 const
   cmdGetAge = """
@@ -15,14 +18,41 @@ const
   git log --pretty="format: %ai"
   """
 
+proc getRepoAge (created = false): string =
+  let (res, code) =
+    if created: execCmdEx cmdGetCreatedDate
+    else: execCmdEx cmdGetAge
 
-proc getActiveDays (): int =
-  let (res, code) = execCmdEx GET_DAYS
-  if code != 0: return 0
+  if code != 0: return "never"
+  let lines = res.splitLines
+  result =
+    if lines.len > 1: lines[1].strip
+    else: lines[0].strip
+
+proc extractDate (str: string): string =
+  str.strip.split[0]
+
+proc getActiveDays (): string =
+  let (res, code) = execCmdEx cmdGetActiveDays
+  if code != 0: return "0 days"
   if res.endsWith("does not have any commits yet\n"):
-    return 0
+    return "0 days"
 
-  result = res.splitLines.deduplicate.len
+  let created = getRepoAge(true).extractDate
+  let parsed = created.parse "yyyy-MM-dd"
+  let diff = getTime() - parsed.toTime
+  let totalTime = diff.int.seconds
+  let activeDays =
+    res
+    .splitLines
+    .filter(line => line.strip != "")
+    .map(extractDate)
+    .deduplicate
+    .len
+
+  let percentActive = activeDays / totalTime.days
+  let precentString = percentActive.formatFloat(precision = 2)
+  result = $activeDays & " days (" & precentString & "%)"
 
 proc getCommitCount (): string =
   let (res, code) = execCmdEx "git rev-list HEAD --count"
@@ -34,19 +64,13 @@ proc getFileCount (): int =
   if code != 0: return 0
   result = countLines res
 
-proc getRepoAge (): string =
-  let (res, code) = execCmdEx GET_AGE
-  if code != 0: return "never"
-  let lines = splitLines res
-  result = if lines.len > 1: lines[1] else: lines[0]
-
 proc summary* (args: Arguments, opts: Options) =
   if not isGitRepo(): fail errNotRepo
 
   print "Project summary ->"
   echo "  project   : " & getRepoName()
-  echo "  created   : " & $getRepoAge()
-  echo "  active    : " & $getActiveDays() & " days"
+  echo "  created   : " & getRepoAge()
+  echo "  active    : " & getActiveDays()
   echo "  commits   : " & getCommitCount()
   echo "  files     : " & $getFileCount()
   echo ""
