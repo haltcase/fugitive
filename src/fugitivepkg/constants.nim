@@ -4,22 +4,22 @@ import strutils
 import colorize
 
 const
-  CONFIG_PATH* = getConfigDir() / "fugitive.ini"
+  configFilePath* = getConfigDir() / "fugitive.ini"
 
 # error messages
 
 const
-  NOT_REPO* = "Must be run in a git repository."
-  NO_NAME* = "You must provide a username."
+  errNotRepo* = "Must be run in a git repository."
+  errNoName* = "You must provide a username."
 
 # usage strings
 
 const
-  PROJECT = "fugitive".fgYellow
-  USAGE = "Usage".bold
-  COMMANDS = "Commands".bold
-  OPTIONS = "Options".bold
-  HELP* = """
+  project = "fugitive".fgYellow
+  usage = "Usage".bold
+  commands = "Commands".bold
+  options = "Options".bold
+  help* = """
 
   $usage: $project [command] [...args] [...options]
 
@@ -44,8 +44,8 @@ const
     --help, -h       Show this help message
     --version, -v    Output the $project version number
   """ % [
-    "project", PROJECT,
-    "usage", USAGE,
-    "commands", COMMANDS,
-    "options", OPTIONS
+    "project", project,
+    "usage", usage,
+    "commands", commands,
+    "options", options
   ]

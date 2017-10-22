@@ -6,10 +6,10 @@ import ../constants
 proc loadSettings* (): Config =
   getConfigDir().createDir()
   try:
-    result = loadConfig(CONFIG_PATH)
+    result = loadConfig(configFilePath)
   except IOError:
     var cfg = newConfig()
-    cfg.writeConfig(CONFIG_PATH)
+    cfg.writeConfig(configFilePath)
     result = cfg
 
 proc getConfigValue* (section, key: string): string =
@@ -19,5 +19,5 @@ proc getConfigValue* (section, key: string): string =
 proc setConfigValue* (section, key, value: string): string =
   var cfg = loadSettings()
   cfg.setSectionKey(section, key, value)
-  cfg.writeConfig(CONFIG_PATH)
+  cfg.writeConfig(configFilePath)
   result = value

@@ -3,23 +3,23 @@ import sequtils
 import strutils
 
 const
-  SECOND = 1000
-  MINUTE = 60 * SECOND
-  HOUR = 60 * MINUTE
-  DAY = 24 * HOUR
-  YEAR = 365 * DAY
-  UNITS = [YEAR, DAY, HOUR, MINUTE, SECOND, 1]
-  LABELS = ["y", "d", "h", "m", "s", "ms"]
+  second = 1000
+  minute = 60 * second
+  hour = 60 * minute
+  day = 24 * hour
+  year = 365 * day
+  unitValues = [year, day, hour, minute, second, 1]
+  unitLabels = ["y", "d", "h", "m", "s", "ms"]
 
 proc parseToUnits [T] (duration: T): seq[string] =
   result = @[]
   let rounded = duration.float64.round.int
   var remainder = rounded * 1000
-  for i, unit in UNITS:
+  for i, unit in unitValues:
     let count = remainder div unit
     if count == 0: continue
     remainder -= count * unit
-    result.add $count & LABELS[i]
+    result.add $count & unitLabels[i]
 
 proc humanize* [T] (duration: T): string =
   let times = parseToUnits duration
