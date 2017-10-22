@@ -52,7 +52,7 @@ proc install* (args: Arguments, opts: Options) =
       # user hasn't allowed overriding existing aliases
       continue
 
-    let (_, code) = command.createAlias value
+    let (_, code) = createAlias(command, value)
     if code != 0:
       failSoft "Could not set alias for '" & command & "'"
 

@@ -44,7 +44,7 @@ proc mirror* (args: Arguments, opts: Options) =
       if dirs.len >= i + 1: dirs[i]
       else: url.split('/')[^1]
 
-    if target.existsDir():
+    if target.existsDir:
       continue
 
     let (res, code) = execCmdEx "git clone " & url & " " & target

@@ -49,16 +49,16 @@ proc getUserObject* (username: string): Future[GitHubUser] {.async.} =
   let client = newAsyncHttpClient()
   let res = await client.get "https://api.github.com/users/" & username
   let body = parseJson await res.body
-  result = to(body, GitHubUser)
+  result = body.to(GitHubUser)
 
 proc getRepoCount* (username: string): Future[int] {.async.} =
-  result = (await getUserObject username).publicRepos
+  result = (await username.getUserObject).publicRepos
 
 proc getUserEmail* (username: string): Future[string] {.async.} =
-  result = (await getUserObject username).email
+  result = (await username.getUserObject).email
 
 proc getUserAge* (username: string): Future[string] {.async.} =
-  let user = await getUserObject username
+  let user = await username.getUserObject
   let created = parse(user.createdAt, timeFormat)
   let diff = getTime() - created.toTime
   result = humanize diff
