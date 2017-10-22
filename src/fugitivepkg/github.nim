@@ -42,8 +42,8 @@ type
     updated_at*: string
 
 const
-  BASE_URL = "https://github.com/"
-  TIME_FORMAT = "yyyy-MM-dd'T'HH-mm-sszzz"
+  baseUrl = "https://github.com/"
+  timeFormat = "yyyy-MM-dd'T'HH-mm-sszzz"
 
 proc getUserObject* (username: string): Future[GitHubUser] {.async.} =
   let client = newAsyncHttpClient()
@@ -59,7 +59,7 @@ proc getUserEmail* (username: string): Future[string] {.async.} =
 
 proc getUserAge* (username: string): Future[string] {.async.} =
   let user = await getUserObject username
-  let created = parse(user.createdAt, TIME_FORMAT)
+  let created = parse(user.createdAt, timeFormat)
   let diff = getTime() - created.toTime
   result = humanize diff
 
@@ -68,7 +68,7 @@ proc resolveRepoURL* (repo: string, failMsg = "this action"): string =
   of 0:
     let owner = getConfigValue("github", "username")
     if owner != "":
-      result = BASE_URL & owner & "/" & repo
+      result = baseUrl & owner & "/" & repo
     else:
       let res = promptResponse("Enter your GitHub username:").strip
       if res == "":
@@ -76,6 +76,6 @@ proc resolveRepoURL* (repo: string, failMsg = "this action"): string =
         result = ""
       else:
         let username = setConfigValue("github", "username", res)
-        result = BASE_URL & username & "/" & repo
-  of 1: result = BASE_URL & repo
+        result = baseUrl & username & "/" & repo
+  of 1: result = baseUrl & repo
   else: result = repo

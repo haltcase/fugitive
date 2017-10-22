@@ -30,7 +30,6 @@ proc parseDirArgs (opts: Options): seq[string] =
 
 proc mirror* (args: Arguments, opts: Options) {.noReturn.} =
   if args.len < 1:
-    echo "\n" & USAGE
     echo "\n" & usageMessage
     quit 0
 
