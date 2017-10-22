@@ -64,7 +64,7 @@ proc getUserAge* (username: string): Future[string] {.async.} =
   result = humanize diff
 
 proc resolveRepoURL* (repo: string, failMsg = "this action"): string =
-  case repo.count '/':
+  case repo.count '/'
   of 0:
     let owner = getConfigValue("github", "username")
     if owner != "":

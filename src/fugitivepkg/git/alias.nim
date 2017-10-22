@@ -56,7 +56,7 @@ proc removeAlias* (name: string): CmdExResult =
   result = execCmdEx REMOVE % [name]
 
 proc alias* (args: Arguments, opts: Options) =
-  case args.len:
+  case args.len
   of 0:
     let (pairs, longest) = getAliasList()
     if pairs.len == 0:

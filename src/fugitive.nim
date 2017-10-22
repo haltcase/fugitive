@@ -41,10 +41,10 @@ proc parseInput (): Input =
   var args: seq[string] = @[]
   var opts = initTable[string, string]()
   for kind, key, val in getopt():
-    case kind:
     of cmdArgument: args.add key.toLowerAscii
+    case kind
     of cmdLongOption, cmdShortOption:
-      case key:
+      case key
       of "help", "h":
         echo HELP
         quit 0
@@ -57,7 +57,7 @@ proc parseInput (): Input =
   result = (args, opts)
 
 proc main (command: string, args: Arguments, opts: Options): int =
-  case command:
+  case command
   of "age":
     argCheck(args, 1, NO_NAME)
     print "$1 profile age: $2" % [args[0], waitFor getUserAge args[0]]
