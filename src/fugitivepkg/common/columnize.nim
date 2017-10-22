@@ -34,6 +34,6 @@ proc columnize* (
   result = ""
   for i, val in dist[0]:
     var row = val
-    for _, col in dist[1..^1]:
+    for col in dist[1..^1]:
       row &= " " & repeat(fillChar, gutter) & " " & col[i]
     result &= indent.spaces & row & "\n"

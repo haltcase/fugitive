@@ -17,7 +17,7 @@ proc unstage* (args: Arguments, opts: Options) =
     # but unlike `git add`, `git rm` only accepts a single file
     # at a time, so we'll have to run a separate command for each one
     var good = 0
-    for _, arg in args:
+    for arg in args:
       let (res, code) = execCmdEx "git rm --cached " & arg
       if code != 0:
         failSoft "Could not unstage '" & arg & "'\n" & res.indent 2

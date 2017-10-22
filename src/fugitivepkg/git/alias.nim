@@ -40,8 +40,8 @@ proc getAliasList (pred: (v: string) -> bool = (v: string) => true): AliasList =
 
 proc buildRows (pairs: seq[AliasPair], longest: Longest): seq[string] =
   result = @[]
-  for _, val in pairs:
-    let (name, expansion) = val
+  for pair in pairs:
+    let (name, expansion) = pair
     let spacer = 1.spaces & repeat('.', 6) & 1.spaces
     result.add "$1$2$3" % [
       padRight(name, longest.name),
