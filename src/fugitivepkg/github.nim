@@ -70,7 +70,7 @@ proc resolveRepoURL* (repo: string, failMsg = "this action"): string =
     if owner != "":
       result = baseUrl & owner & "/" & repo
     else:
-      let res = promptResponse("Enter your GitHub username:").strip
+      let res = promptResponse("Enter your GitHub username:")
       if res == "":
         failSoft "GitHub username required for " & failMsg & "\n"
         result = ""
