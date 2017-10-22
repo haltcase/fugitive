@@ -34,7 +34,7 @@ const version =
   pkgPath
   .staticRead
   .splitLines()[0]
-  .split("=")[1]
+  .split('=')[1]
   .strip(chars = {'"'} + Whitespace)
 
 proc parseInput (): Input =

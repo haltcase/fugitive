@@ -22,9 +22,9 @@ const
 
 proc parseDirArgs (opts: Options): seq[string] =
   if "d" in opts:
-    result = opts["d"].split ","
+    result = opts["d"].split ','
   elif "directory" in opts:
-    result = opts["directory"].split ","
+    result = opts["directory"].split ','
   else:
     result = @[]
 
@@ -42,7 +42,7 @@ proc mirror* (args: Arguments, opts: Options) {.noReturn.} =
 
     let target =
       if dirs.len >= i + 1: dirs[i]
-      else: url.split("/")[^1]
+      else: url.split('/')[^1]
 
     if target.existsDir():
       continue
