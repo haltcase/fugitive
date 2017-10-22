@@ -102,8 +102,8 @@ To build fugitive from source you'll need to have [Nim][nim] installed,
 and should also have [Nimble][nimble], Nim's package manager.
 
 > currently, building should work on most platforms. cross-compilation
-  (building for other platforms than the current one) is only tested on
-  a unix system
+(building for other platforms than the current one) is only tested on
+a unix system
 
 1. Clone the repo: `git clone https://github.com/citycide/fugitive.git`
 2. Move into the newly cloned directory: `cd fugitive`
