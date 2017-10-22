@@ -22,7 +22,7 @@ import fugitivepkg/git/[
   unstage
 ]
 
-template getPkgPath (): string =
+proc getPkgPath (): static[string] =
   instantiationInfo(fullPaths = true).filename.parentDir.parentDir
 
 when defined(windows) and not defined(cross):
