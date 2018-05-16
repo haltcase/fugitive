@@ -44,9 +44,9 @@ proc buildRows (pairs: seq[AliasPair], longest: Longest): seq[string] =
     let (name, expansion) = pair
     let spacer = 1.spaces & repeat('.', 6) & 1.spaces
     result.add "$1$2$3" % [
-      padRight(name, longest.name),
+      align(name, longest.name),
       spacer,
-      padRight(expansion, longest.expansion)
+      align(expansion, longest.expansion)
     ]
 
 proc createAlias* (name, command: string): CmdExResult =

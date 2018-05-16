@@ -2,9 +2,6 @@ import os
 import osproc
 import strutils
 
-proc padRight* (str: string, width: int): string =
-  str & spaces max(0, width - str.len)
-
 proc removeSuffix* (str, suffix: string): string =
   var output = str
   removeSuffix(output, suffix)
