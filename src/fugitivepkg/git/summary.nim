@@ -9,13 +9,13 @@ import times
 const
   cmdGetAge = """
   git rev-list HEAD --pretty="format: %ar" --max-parents=0
-  """
+  """.strip
   cmdGetCreatedDate = """
   git rev-list HEAD --pretty="format: %ai" --max-parents=0
-  """
+  """.strip
   cmdGetActiveDays = """
   git log --pretty="format: %ai"
-  """
+  """.strip
 
 proc getRepoAge (created = false): string =
   let (res, code) =
