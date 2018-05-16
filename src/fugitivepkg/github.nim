@@ -60,7 +60,7 @@ proc getUserEmail* (username: string): Future[string] {.async.} =
 proc getUserAge* (username: string): Future[string] {.async.} =
   let user = await username.getUserObject
   let created = parse(user.createdAt, timeFormat)
-  let diff = getTime() - created.toTime
+  let diff = epochTime() - created.toTime.toUnix.float
   result = humanize diff
 
 proc resolveRepoURL* (repo: string, failMsg = "this action"): string =

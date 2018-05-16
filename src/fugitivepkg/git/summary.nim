@@ -39,7 +39,7 @@ proc getActiveDays (): string =
 
   let created = getRepoAge(true).extractDate
   let parsed = created.parse "yyyy-MM-dd"
-  let diff = getTime() - parsed.toTime
+  let diff = epochTime() - parsed.toTime.toUnix.float
   let totalTime = diff.int.seconds
   let activeDays =
     res
