@@ -1,6 +1,5 @@
 include ../base
 
-import future
 import os
 import ospaths
 import sequtils
