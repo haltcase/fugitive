@@ -60,8 +60,8 @@ Options:
 ```
 
 Some commands require that a GitHub username be configured, to allow
-for useful shorthands like `fugitive open trilogy` - which, if you're
-**[@citycide](https://github.com/citycide)**, will open [trilogy](https://github.com/citycide/trilogy).
+for useful shorthands like `fugitive open cascade` - which, if you're
+**[@citycide](https://github.com/citycide)**, will open **[`cascade`](https://github.com/citycide/cascade)**.
 These commands ( currently including `open` & `mirror` ), will prompt
 for a username if one hasn't yet been configured.
 
