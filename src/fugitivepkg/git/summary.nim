@@ -50,8 +50,8 @@ proc getActiveDays (): string =
     .len
 
   let percentActive = activeDays / totalTime.days
-  let precentString = percentActive.formatFloat(precision = 2)
-  result = $activeDays & " days (" & precentString & "%)"
+  let percentString = percentActive.formatFloat(precision = 2)
+  result = $activeDays & " days (" & percentString & "%)"
 
 proc getCommitCount (): string =
   let (res, code) = execCmdEx "git rev-list HEAD --count"
