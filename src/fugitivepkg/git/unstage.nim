@@ -22,7 +22,7 @@ proc unstage* (args: Arguments, opts: Options) =
       if code != 0:
         failSoft "Could not unstage '" & arg & "'\n" & res.indent 2
       else:
-        good += 1
+        inc good
 
     print "Files unstaged (" & $good & " of " & $args.len & ")"
   else:
