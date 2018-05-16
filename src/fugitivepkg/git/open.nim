@@ -35,10 +35,16 @@ proc open* (args: Arguments, opts: Options) =
       echo "\n" & usageMessage
       quit 0
 
-  when defined linux:
+  let url = resolveRepoURL(args[0], "`open` repo shorthand")
+
+  when not defined linux:
+    openDefaultBrowser(url)
+  else:
+    if "Microsoft" in readFile("/proc/sys/kernel/osrelease"):
+      let (res, code) = execCmdEx "cmd.exe /c start \"\" " & url
+      if code != 0: fail res
+      return
+
     let (res, _) = execCmdEx "echo $DISPLAY"
     if res.strip == "":
       fail "No display detected - cannot open repository"
-
-  let url = resolveRepoURL(args[0], "`open` repo shorthand")
-  openDefaultBrowser(url)
