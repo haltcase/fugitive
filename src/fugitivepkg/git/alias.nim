@@ -38,6 +38,12 @@ proc getAliasList (pred: (v: string) -> bool = (v: string) => true): AliasList =
 
     result = (pairs, longest)
 
+proc createAlias* (name, command: string): CmdExResult =
+  result = execCmdEx cmdCreateAlias % [name, command]
+
+proc removeAlias* (name: string): CmdExResult =
+  result = execCmdEx cmdRemoveAlias % [name]
+
 proc buildRows (pairs: seq[AliasPair], longest: Longest): seq[string] =
   result = @[]
   for pair in pairs:
@@ -48,12 +54,6 @@ proc buildRows (pairs: seq[AliasPair], longest: Longest): seq[string] =
       spacer,
       align(expansion, longest.expansion)
     ]
-
-proc createAlias* (name, command: string): CmdExResult =
-  result = execCmdEx cmdCreateAlias % [name, command]
-
-proc removeAlias* (name: string): CmdExResult =
-  result = execCmdEx cmdRemoveAlias % [name]
 
 proc alias* (args: Arguments, opts: Options) =
   case args.len
