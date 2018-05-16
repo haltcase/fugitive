@@ -22,7 +22,7 @@ proc columnize* (
   if fillHeight and rows.len < height:
     return indent.spaces & rows.join("\n" & indent.spaces) & "\n"
 
-  let cellWidth = rows.map(v => len v).max + padding
+  let cellWidth = rows.mapIt(it.len).max + padding
   let colCount = (width / cellWidth).floor.int.min(columns)
   var dist = rows.distribute colCount
   if dist.len == 1: return dist.join "\n"

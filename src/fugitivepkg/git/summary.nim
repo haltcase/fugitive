@@ -45,7 +45,7 @@ proc getActiveDays (): string =
   let activeDays =
     res
     .splitLines
-    .filter(line => line.strip != "")
+    .filterIt(it.strip != "")
     .map(extractDate)
     .deduplicate
     .len
