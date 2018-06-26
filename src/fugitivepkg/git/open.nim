@@ -21,6 +21,10 @@ const
   """
 
 proc open* (args: Arguments, opts: Options) =
+  if "help" in opts:
+    echo "\n" & usageMessage
+    quit 0
+
   if args.len < 1:
     if isGitRepo():
       let (res, code) = execCmdEx "git remote -v"

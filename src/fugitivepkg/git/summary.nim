@@ -16,6 +16,12 @@ const
   cmdGetActiveDays = """
   git log --pretty="format: %ai"
   """.strip
+  usageMessage = """
+  Usage: fugitive summary
+
+  Prints a summary of the current repository including some statistics,
+  such as when it was created, how active it is, number of commits, etc.
+  """
 
 proc getRepoAge (created = false): string =
   let (res, code) =
@@ -65,6 +71,10 @@ proc getFileCount (): int =
   result = countLines res
 
 proc summary* (args: Arguments, opts: Options) =
+  if "help" in opts:
+    echo "\n" & usageMessage
+    quit 0
+
   if not isGitRepo(): fail errNotRepo
 
   print "Project summary ->"

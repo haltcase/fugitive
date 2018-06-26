@@ -1,7 +1,26 @@
 include ../base
 
+const
+  usageMessage = """
+  Usage: fugitive undo [#] [--hard|-h]
+
+  Undo the latest commit or the latest <#> commits if provided.
+  By default the changes in the commit are preserved but can be
+  discarded by providing the --hard (-h) flag.
+
+  Example:
+
+    fugitive undo       # roll back the most recent commit
+    fugitive undo 3     # roll back the 3 most recent commits
+  """
+
 proc undo* (args: Arguments, opts: Options) =
+  if "help" in opts:
+    echo "\n" & usageMessage
+    quit 0
+
   if not isGitRepo(): fail errNotRepo
+
   let num = if args.len >= 1: args[0] else: ""
   let strategy = if "hard" in opts: "hard" else: "soft"
   let (res, code) = execCmdEx "git reset --" & strategy & " HEAD^" & num

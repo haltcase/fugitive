@@ -1,5 +1,7 @@
 include ../base
 
+import strformat
+
 from ./alias import createAlias
 
 const
@@ -7,12 +9,20 @@ const
   This will alias various fugitive commands as git subcommands,
   which means for example that these would be equivalent:
 
-    git unstage [...files]
-    fugitive unstage [...files]
+    git unstage <...files>
+    fugitive unstage <...files>
 
   Be aware this can conflict with other tools that may do the same.
   Nothing will be overridden unless you pass the --override (-o) flag.
   """.strip
+  usageMessage = &"""
+  Usage: fugitive install [--override|-o] [--force|-y]
+
+  {helpMessage}
+
+  If you're brave you can pass the --force (-y) flag to skip the
+  confirmation prompt.
+  """
 
   commandsToAlias* = [
     "alias",
@@ -27,6 +37,10 @@ const
   ]
 
 proc install* (args: Arguments, opts: Options) =
+  if "help" in opts:
+    echo "\n" & usageMessage
+    quit 0
+
   let noPrompt = "y" in opts or "force" in opts
   if not noPrompt and not prompt(helpMessage):
     print "Install cancelled."

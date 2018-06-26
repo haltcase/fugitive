@@ -1,7 +1,27 @@
 include ../base
 
+import strformat
+
+const
+  cmdUnlockFile = "git update-index --no-skip-worktree $1"
+  usageMessage = """
+  Usage: fugitive unstage <...files>
+
+  Resume tracking changes to the specified files after having
+  previously run `fugitive lock <...files>`.
+
+  Example
+
+    fugitive unstage src/foo.nim src/bar.nim
+  """
+
 proc unstage* (args: Arguments, opts: Options) =
+  if "help" in opts:
+    echo "\n" & usageMessage
+    quit 0
+
   if not isGitRepo(): fail errNotRepo
+
   argCheck(args, 1, "File names required.")
 
   let (res, code) = execCmdEx "git reset HEAD " & args.join(" ")
@@ -20,10 +40,10 @@ proc unstage* (args: Arguments, opts: Options) =
     for arg in args:
       let (res, code) = execCmdEx "git rm --cached " & arg
       if code != 0:
-        failSoft "Could not unstage '" & arg & "'\n" & res.indent 2
+        failSoft &"Could not unstage '{arg}'\n{res.indent(2)}"
       else:
         inc good
 
-    print "Files unstaged (" & $good & " of " & $args.len & ")"
+    print &"Files unstaged ({good} of {args.len})"
   else:
     fail res

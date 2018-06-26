@@ -17,6 +17,36 @@ const
   cmdCreateAlias = "git config --global alias.\"$1\" \"$2\""
   cmdRemoveAlias = "git config --global --unset alias.$1"
   cmdListAliases = "git config --list"
+  usageMessage = """
+  Usage: fugitive alias [name [--remove|-r]] [expansion]
+
+  List, add, or remove git aliases. Providing no arguments
+  will list all aliases. Providing a name only will search
+  aliases for that substring. If more than 1 argument is provided,
+  the first is used as the name and the rest are used as the
+  expanded command. This means quoting `expansion` is not strictly
+  necessary.
+
+  If the command you are aliasing is not a git subcommand,
+  you need to prefix it with an exclamation point (!). Note
+  however that in this case you must quote or escape that
+  exclamation character or it may be interpreted by your
+  shell.
+
+  Example:
+
+    # list existing aliases
+    fugitive alias
+
+    # add a new alias to an existing git subcommand
+    fugitive alias st 'status'
+
+    # update that alias to an arbitrary command
+    fugitive alias st '!git status && echo that is the status'
+
+    # remove that alias
+    fugitive alias st --remove
+  """
 
 proc getAliasList (pred: (v: string) -> bool = (v: string) => true): AliasList =
   let (res, _) = execCmdEx cmdListAliases
@@ -57,6 +87,10 @@ proc buildRows (pairs: seq[AliasPair], longest: Longest): seq[string] =
     ]
 
 proc alias* (args: Arguments, opts: Options) =
+  if "help" in opts:
+    echo "\n" & usageMessage
+    quit 0
+
   case args.len
   of 0:
     let (pairs, longest) = getAliasList()

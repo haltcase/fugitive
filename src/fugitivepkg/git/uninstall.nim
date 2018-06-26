@@ -10,8 +10,17 @@ const
   This will remove fugitive commands as git aliases. Existing aliases
   that were not set by fugitive will be unaffected.
   """.strip
+  usageMessage = &"""
+  Usage: fugitive uninstall
+
+  {helpMessage}
+  """
 
 proc uninstall* (args: Arguments, opts: Options) =
+  if "help" in opts:
+    echo "\n" & usageMessage
+    quit 0
+
   if not prompt(helpMessage):
     print "Uninstall cancelled."
     quit 0
