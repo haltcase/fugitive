@@ -61,14 +61,14 @@ Options:
   --version, -v    Output the fugitive version number
 ```
 
+For help on a specific command, provide the `--help`/`-h` flag _after_
+that command, ie. `fugitive changelog -h`.
+
 Some commands require that a GitHub username be configured, to allow
 for useful shorthands like `fugitive open cascade` - which, if you're
 **[@citycide](https://github.com/citycide)**, will open **[`cascade`](https://github.com/citycide/cascade)**.
 These commands ( currently including `open` & `mirror` ), will prompt
 for a username if one hasn't yet been configured.
-
-For help on a specific command, provide the `--help`/`-h` flag _after_
-that command, ie. `fugitive changelog -h`.
 
 ## alias installation
 
