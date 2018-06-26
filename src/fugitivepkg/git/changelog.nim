@@ -149,8 +149,8 @@ proc changelog* (args: Arguments, opts: Options) =
   commitList.keepIf(shouldPrint)
 
   let newTag =
-    if "tag" in opts: opts["tag"]
-    elif "t" in opts: opts["t"]
+    if "tag" in opts: opts["tag"].strip
+    elif "t" in opts: opts["t"].strip
     else: ""
 
   let repoUrl = getRepoUrl()
@@ -166,6 +166,7 @@ proc changelog* (args: Arguments, opts: Options) =
   let (file, path, overwrite) = selectFile(args, opts)
 
   if "no-anchor" notin opts:
+    let anchor = if newTag != "": newTag else: getDateStr()
     file.output &"<a name=\"{newTag}\"></a>\n"
 
   file.output title
