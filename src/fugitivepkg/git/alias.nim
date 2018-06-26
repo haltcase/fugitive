@@ -2,6 +2,7 @@ include ../base
 
 import future
 from sequtils import filter
+import strformat
 from terminal import terminalHeight
 
 import ../common/columnize
@@ -70,24 +71,24 @@ proc alias* (args: Arguments, opts: Options) =
     if "remove" in opts or "r" in opts:
       let (_, code) = removeAlias args[0]
       if code != 0:
-        fail "Could not remove alias '" & args[0] & "'. Does it exist?"
+        fail &"Could not remove alias '{args[0]}'. Does it exist?"
       else:
-        print "Alias '" & args[0] & "' removed"
+        print &"Alias '{args[0]}' removed"
       return
 
     let (pairs, longest) = getAliasList(v => v.contains args[0])
     if pairs.len == 0:
-      print "No aliases containing '" & args[0] & "'"
+      print &"No aliases containing '{args[0]}'"
       return
 
-    print "Git aliases containing '" & args[0] & "' ->"
+    print &"Git aliases containing '{args[0]}' ->"
     let rows = buildRows(pairs, longest)
     echo rows.columnize(gutter = 4)
   else:
     let cmd = args[1..args.high].join " "
     let (res, code) = createAlias(args[0], cmd)
     if code != 0:
-      fail "Could not create alias '" & args[0] & "'" &
+      fail &"Could not create alias '{args[0]}'" &
         "\n" & (if res != "": indent(res, 2) else: "")
     else:
-      print "Created alias '" & args[0] & "' = " & cmd
+      print &"Created alias '{args[0]}' = {cmd}"

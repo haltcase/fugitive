@@ -1,5 +1,7 @@
 include ../base
 
+import strformat
+
 from ./alias import removeAlias
 from ./install import commandsToAlias
 
@@ -21,7 +23,7 @@ proc uninstall* (args: Arguments, opts: Options) =
     if stripped == value:
       let (_, code) = command.removeAlias
       if code != 0:
-        failSoft "Could not remove alias for '" & command & "'"
+        failSoft &"Could not remove alias for '{command}'"
     else:
       continue
 

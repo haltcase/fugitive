@@ -2,6 +2,7 @@ import asyncdispatch
 import os
 import osproc
 import parseopt
+import strformat
 import strutils
 import tables
 
@@ -74,7 +75,7 @@ proc main (command: string, args: Arguments, opts: Options): int =
   of "repos":
     argCheck(args, 1, errNoName)
     let count = waitFor args[0].getRepoCount
-    print "$1 has $2 public repositories" % [args[0], $count]
+    print "{args[0]} has {count} public repositories"
   of "summary": summary(args, opts)
   of "undo": undo(args, opts)
   of "uninstall": uninstall(args, opts)
