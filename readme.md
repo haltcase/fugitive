@@ -67,6 +67,9 @@ for useful shorthands like `fugitive open cascade` - which, if you're
 These commands ( currently including `open` & `mirror` ), will prompt
 for a username if one hasn't yet been configured.
 
+For help on a specific command, provide the `--help`/`-h` flag _after_
+that command, ie. `fugitive changelog -h`.
+
 ## alias installation
 
 After installation, you can make some of fugitive's commands more
