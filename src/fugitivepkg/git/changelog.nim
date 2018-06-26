@@ -2,7 +2,7 @@ include ../base
 
 import strformat
 from algorithm import sort
-from os import moveFile, tryRemoveFile
+from os import existsFile, moveFile, tryRemoveFile
 from sequtils import keepIf
 from times import getDateStr
 
@@ -106,7 +106,11 @@ proc output (dest: File, str: string) =
 
 proc getDestFile (args: Arguments): File =
   if args.len > 0 and args[0].len > 0:
-    return args[0].open(fmRead)
+    if not args[0].existsFile: return stdin
+    try:
+      return args[0].open(fmRead)
+    except IOError:
+      return stdin
 
 proc selectFile (args: Arguments, opts: Options): tuple[fd: File, name: string, overwrite: bool] =
   if args.len > 0 and args[0].len > 0:
@@ -177,11 +181,13 @@ proc changelog* (args: Arguments, opts: Options) =
     # non-stdout handling
     if not overwrite:
       let origFile = args.getDestFile
-      for line in origFile.lines:
-        file.output line & "\n"
+
+      if origFile != stdin:
+        for line in origFile.lines:
+          file.output line & "\n"
+        close origFile
 
       close file
-      close origFile
       discard tryRemoveFile(args[0])
       moveFile(path, args[0])
     else:
