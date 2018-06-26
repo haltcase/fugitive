@@ -126,11 +126,11 @@ proc selectFile (args: Arguments, opts: Options): tuple[fd: File, name: string, 
     result = (stdout, "", false)
 
 proc changelog* (args: Arguments, opts: Options) =
-  if not isGitRepo(): fail errNotRepo
-
-  if "help" in opts or "h" in opts:
+  if "help" in opts:
     echo "\n" & usageMessage
     quit 0
+
+  if not isGitRepo(): fail errNotRepo
 
   let (lastTag, code) = execCmdEx cmdGetTags
   let rev = if code != 0: "" else: lastTag.strip & "..HEAD"
