@@ -9,6 +9,7 @@ import fugitivepkg/[constants, github, types]
 import fugitivepkg/common/cli
 import fugitivepkg/git/[
   alias,
+  changelog,
   install,
   lock,
   mirror,
@@ -65,6 +66,7 @@ proc main (command: string, args: Arguments, opts: Options): int =
     argCheck(args, 1, errNoName)
     print "$1 profile age: $2" % [args[0], waitFor args[0].getUserAge]
   of "alias": alias(args, opts)
+  of "changelog": changelog(args, opts)
   of "install": install(args, opts)
   of "lock": lock(args, opts)
   of "mirror", "clone": mirror(args, opts)
