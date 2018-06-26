@@ -42,7 +42,7 @@ Commands:
   alias     [name [--remove|-r]] [expansion]
                                  List, add, or remove git aliases
   changelog [file] [--tag|-t:<tag>] [--overwrite|-o] [--no-anchor]
-                                 Write changes since last tag to file or stdout.
+                                 Write changes since last tag to file or stdout
   clone     <...repos>           Alias for `fugitive mirror`
   install   [--override|-o] [--force|-y]
                                  Alias various fugitive commands as git subcommands
