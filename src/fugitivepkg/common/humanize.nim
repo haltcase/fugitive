@@ -1,6 +1,5 @@
-import math
-import sequtils
-import strutils
+from math import round
+from strutils import join
 
 const
   second = 1000
@@ -11,15 +10,15 @@ const
   unitValues = [year, day, hour, minute, second, 1]
   unitLabels = ["y", "d", "h", "m", "s", "ms"]
 
-proc parseToUnits [T] (duration: T): seq[string] =
+proc parseToUnits (duration: int | float): seq[string] =
   result = @[]
-  var remainder = (duration.float64 * 1000).round.int
+  var remainder = (duration.float * 1000).round.int
   for i, unit in unitValues:
     let count = remainder div unit
     if count == 0: continue
     remainder -= count * unit
     result.add $count & unitLabels[i]
 
-proc humanize* [T] (duration: T): string =
-  let times = parseToUnits duration
-  result = if times.len != 0: times.join " " else: "0ms"
+proc humanize* (duration: int | float): string =
+  let times = duration.parseToUnits
+  result = if times.len != 0: times.join(" ") else: "just now"
