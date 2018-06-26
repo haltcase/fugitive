@@ -21,7 +21,7 @@ const
   commitFormatParts = ["%H", "%s", "%b"]
   commitFormat = commitFormatParts.join(itemSeparator)
   cmdGetTags = "git describe --tags --abbrev=0"
-  cmdGetCommits = "git log -E --format=" & commitFormat & commitSeparator
+  cmdGetCommits = &"""git log -E --format="{commitFormat}{commitSeparator}" """
   commitKinds = {
     "": (print: false, heading: ""),
     "ci": (print: false, heading: ""),
@@ -128,7 +128,7 @@ proc changelog* (args: Arguments, opts: Options) =
   let (lastTag, code) = execCmdEx cmdGetTags
   let rev = if code != 0: "" else: lastTag.strip & "..HEAD"
 
-  let (commits, c) = execCmdEx cmdGetCommits & " " & rev
+  let (commits, c) = execCmdEx cmdGetCommits & rev
   if c != 0:
     if rev == "":
       print "No commits found."
