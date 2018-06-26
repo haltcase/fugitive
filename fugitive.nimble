@@ -23,7 +23,9 @@ const
     ("linux", "amd64", "x64"),
     ("macos", "amd64", "x64")
   ]
-  build = "nim --cpu:$1 --os:$2 -d:release -d:cross -o:$3 --verbosity:0 --hints:off c src/fugitive"
+  build =
+    "nim --cpu:$1 --os:$2 -d:release -d:fugitiveVersion=v$3 " &
+    "-d:cross -o:$4 --verbosity:0 --hints:off c src/fugitive"
 
 proc getZipName (os, arch: string): string =
   let ext = if os == "windows": ".zip" else: ".tar.gz"
@@ -40,7 +42,7 @@ task build_macos_x64, "Build fugitive for macOS (x64)":
   echo "macOS compilation is not supported on other platforms yet"
 
 task release, "Build all release versions of fugitive":
-  rmDir "dist"
+  rmDir binDir
   for name, arch, type in platforms.items:
     # TODO: macOS compilation
     if name == "macos": continue
@@ -48,12 +50,12 @@ task release, "Build all release versions of fugitive":
     echo "building for " & name & " " & type & "..."
     let
       folder = name & "-" & type
-      outDir = "dist" / folder
+      outDir = binDir / folder
       exeExt = if name == "windows": ".exe" else: ""
       outFile = outDir / "fugitive" & exeExt
 
     mkDir outDir
-    exec build % [arch, name, outFile]
+    exec build % [arch, name, version, outFile]
 
     let zipName = getZipName(name, type)
     let params = zipName & " " & folder

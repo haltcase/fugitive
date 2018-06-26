@@ -22,20 +22,7 @@ import fugitivepkg/git/[
   unstage
 ]
 
-proc getPkgPath (): static[string] =
-  instantiationInfo(fullPaths = true).filename.parentDir.parentDir
-
-when defined(windows) and not defined(cross):
-  const pkgPath = getPkgPath() / "fugitive.nimble"
-else:
-  const pkgPath = getPkgPath() & "/fugitive.nimble"
-
-const version =
-  pkgPath
-  .staticRead
-  .splitLines()[0]
-  .split('=')[1]
-  .strip(chars = {'"'} + Whitespace)
+const fugitiveVersion {.strdefine.} = &"(development build)"
 
 proc parseInput (): Input =
   var args: seq[string] = @[]
@@ -54,7 +41,7 @@ proc parseInput (): Input =
         else:
           opts["help"] = val
       of "version", "v":
-        echo "fugitive v" & version
+        echo "fugitive " & fugitiveVersion
         quit 0
       else: opts[key.toLowerAscii] = val.toLowerAscii
     else: discard
