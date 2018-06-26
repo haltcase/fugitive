@@ -1,3 +1,13 @@
+<a name="v0.3.1"></a>
+### [`v0.3.1`](https://github.com/citycide/fugitive/compare/v0.3.0...v0.3.1) (2018-06-26)
+
+
+###### BUG FIXES
+
+* **cli:** use correct colors for messages ([`3a54827`](https://github.com/citycide/fugitive/commit/3a548275ee7b35575e0e0c35ed4ff92d85d163c4))
+
+---
+
 <a name="v0.3.0"></a>
 ### [`v0.3.0`](https://github.com/citycide/fugitive/compare/v0.2.0...v0.3.0) (2018-06-26)
 
