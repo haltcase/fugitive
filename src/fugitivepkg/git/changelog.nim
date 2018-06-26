@@ -167,7 +167,7 @@ proc changelog* (args: Arguments, opts: Options) =
 
   if "no-anchor" notin opts:
     let anchor = if newTag != "": newTag else: getDateStr()
-    file.output &"<a name=\"{newTag}\"></a>\n"
+    file.output &"<a name=\"{anchor}\"></a>\n"
 
   file.output title
 
