@@ -5,8 +5,6 @@ import parseopt
 import strutils
 import tables
 
-import colorize
-
 import fugitivepkg/[constants, github, types]
 import fugitivepkg/common/cli
 import fugitivepkg/git/[

@@ -9,7 +9,6 @@ srcDir        = "src"
 
 # some breaking changes in `0.18.1` affect fugitive (`times`, `sugar`)
 requires "nim >= 0.18.0 & < 0.18.1"
-requires "colorize >= 0.2.0"
 
 import ospaths
 import strutils
