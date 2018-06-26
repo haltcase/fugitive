@@ -1,7 +1,7 @@
 include ../base
 
 import future
-import sequtils
+from sequtils import filter
 from terminal import terminalHeight
 
 import ../common/columnize

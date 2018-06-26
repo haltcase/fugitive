@@ -1,6 +1,6 @@
 include ../base
 
-import os
+from os import existsDir
 
 from ../github import resolveRepoURL
 

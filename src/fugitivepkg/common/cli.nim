@@ -1,4 +1,4 @@
-import strutils
+from strutils import normalize, strip
 
 import terminal
 

@@ -1,8 +1,8 @@
 import future
-import math
-import sequtils
-import strutils
-import terminal
+from math import floor
+from sequtils import mapIt, distribute
+from strutils import join, repeat, spaces
+from terminal import terminalHeight, terminalWidth
 
 proc columnize* (
   rows: seq[string],

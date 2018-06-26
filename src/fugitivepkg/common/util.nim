@@ -1,5 +1,5 @@
-import os
-import osproc
+from os import getCurrentDir, existsDir, splitFile
+from osproc import execCmdEx
 import strutils
 
 proc removeSuffix* (str, suffix: string): string =
