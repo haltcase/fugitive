@@ -6,7 +6,7 @@ proc printImpl (icon, msg: string, color: ForegroundColor) =
   stdout.setForegroundColor(fgGreen)
   stdout.write(icon)
   resetAttributes()
-  echo msg
+  stdout.write(msg)
 
 proc print* (msg: string) =
   printImpl("\n✓ ", msg, fgGreen)
