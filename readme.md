@@ -114,7 +114,7 @@ a unix system
 1. Clone the repo: `git clone https://github.com/citycide/fugitive.git`
 2. Move into the newly cloned directory: `cd fugitive`
 3. Install dependencies: `nimble install`
-4. Compile for your platform: `nimble build`
+4. Compile for your platform: `nimble build` (development) or `nimble make` (release)
 5. Compile for other platforms: run `nimble tasks` for available commands
 6. Compile all release versions: `nimble release`
    - this will generate and package prebuilt binaries for all supported
