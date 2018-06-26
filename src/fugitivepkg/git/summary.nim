@@ -40,7 +40,8 @@ proc getActiveDays (): string =
   let created = getRepoAge(true).extractDate
   let parsed = created.parse "yyyy-MM-dd"
   let diff = epochTime() - parsed.toTime.toUnix.float
-  let totalTime = diff.int.seconds
+  let totalDays = diff / 86400
+
   let activeDays =
     res
     .splitLines
@@ -49,7 +50,7 @@ proc getActiveDays (): string =
     .deduplicate
     .len
 
-  let percentActive = activeDays / totalTime.days
+  let percentActive = activeDays / totalDays.int
   let percentString = percentActive.formatFloat(precision = 2)
   result = $activeDays & " days (" & percentString & "%)"
 
