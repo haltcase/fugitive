@@ -25,7 +25,7 @@ const
   ]
   build =
     "nim --cpu:$1 --os:$2 -d:release -d:fugitiveVersion=v$3 " &
-    "-d:cross -o:$4 --verbosity:0 --hints:off c src/fugitive"
+    "-o:$4 --verbosity:0 --hints:off c src/fugitive"
 
 proc getZipName (os, arch: string): string =
   let ext = if os == "windows": ".zip" else: ".tar.gz"
