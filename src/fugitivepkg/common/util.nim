@@ -22,7 +22,7 @@ proc getRepoUrl* (): string =
   let (res, code) = execCmdEx "git ls-remote --get-url origin"
   if code != 0 or res == "": return ""
 
-  result = res.strip.removeSuffix(".git")
+  result = res.strip.removeSuffix(".git").normalizeGitUrl
 
 proc getRepoName* (): string =
   let (res, code) = execCmdEx "git ls-remote --get-url origin"
