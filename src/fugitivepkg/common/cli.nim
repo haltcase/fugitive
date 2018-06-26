@@ -3,7 +3,7 @@ from strutils import normalize, strip
 import terminal
 
 proc printImpl (icon, msg: string, color: ForegroundColor) =
-  stdout.setForegroundColor(fgGreen)
+  stdout.setForegroundColor(color)
   stdout.write(icon)
   resetAttributes()
   stdout.write(msg)
