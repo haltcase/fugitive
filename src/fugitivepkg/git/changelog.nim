@@ -35,7 +35,7 @@ const
     "test": (print: false, heading: ""),
   }.toTable
   usageMessage = """
-  Usage: fugitive changelog [file] [--tag,-t:<tag>] [--overwrite,-o]
+  Usage: fugitive changelog [file] [--tag|-t:<tag>] [--overwrite|-o]
 
   Write the list of all changes since the last git tag. Uses the
   Angular commit conventions to categorize and filter commits, ie.
