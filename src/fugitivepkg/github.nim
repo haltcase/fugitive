@@ -1,6 +1,7 @@
 import asyncdispatch
 import httpclient
 import json
+import strformat
 import strutils
 import tables
 import times
@@ -47,7 +48,7 @@ const
 
 proc getUserObject* (username: string): Future[GitHubUser] {.async.} =
   let client = newAsyncHttpClient()
-  let res = await client.get "https://api.github.com/users/" & username
+  let res = await client.get(&"https://api.github.com/users/{username}")
   let body = parseJson await res.body
   result = body.to(GitHubUser)
 
@@ -72,7 +73,7 @@ proc resolveRepoURL* (repo: string, failMsg = "this action"): string =
     else:
       let res = promptResponse("Enter your GitHub username:")
       if res == "":
-        failSoft "GitHub username required for " & failMsg & "\n"
+        failSoft &"GitHub username required for {failMsg}\n"
         result = ""
       else:
         let username = setConfigValue("github", "username", res)
