@@ -137,7 +137,7 @@ proc changelog* (args: Arguments, opts: Options) =
     if rev == "":
       print "No commits found."
     else:
-      print "No changes since " & rev & "."
+      print "No changes since " & lastTag.strip & "."
 
     quit 0
 
