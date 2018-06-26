@@ -65,7 +65,8 @@ proc main (command: string, args: Arguments, opts: Options): int =
   case command
   of "age":
     argCheck(args, 1, errNoName)
-    print "$1 profile age: $2" % [args[0], waitFor args[0].getUserAge]
+    let age = waitFor args[0].getUserAge
+    print "{args[0]} profile age: {age}"
   of "alias": alias(args, opts)
   of "changelog": changelog(args, opts)
   of "install": install(args, opts)
