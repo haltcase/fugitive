@@ -41,6 +41,8 @@ Commands:
   age       <username>           Display the age of the profile for <username>
   alias     [name [--remove|-r]] [expansion]
                                  List, add, or remove git aliases
+  changelog [file] [--tag|-t:<tag>] [--overwrite|-o] [--no-anchor]
+                                 Write changes since last tag to file or stdout.
   clone     <...repos>           Alias for `fugitive mirror`
   install   [--override|-o] [--force|-y]
                                  Alias various fugitive commands as git subcommands
@@ -75,6 +77,7 @@ Commands installed to git include:
 
 ```
 alias
+changelog
 lock
 mirror
 open

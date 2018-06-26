@@ -35,7 +35,7 @@ const
     "test": (print: false, heading: ""),
   }.toTable
   usageMessage = """
-  Usage: fugitive changelog [file] [--tag|-t:<tag>] [--overwrite|-o]
+  Usage: fugitive changelog [file] [--tag|-t:<tag>] [--overwrite|-o] [--no-anchor]
 
   Write the list of all changes since the last git tag. Uses the
   Angular commit conventions to categorize and filter commits, ie.
@@ -45,6 +45,9 @@ const
 
   When the `overwrite` flag is absent, changes will be prepended
   to `file` if it exists. Has no effect when writing to `stdout`.
+
+  HTML anchor elements are added for linking purposes but can be
+  disabled by providing the `--no-anchor` flag.
 
   See the Angular contributor guidelines for more information about
   the commit conventions: https://git.io/f49fN
