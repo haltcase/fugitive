@@ -16,6 +16,7 @@ const
 
   commandsToAlias* = [
     "alias",
+    "changelog",
     "lock",
     "mirror",
     "open",
