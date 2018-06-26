@@ -31,6 +31,14 @@ proc getZipName (os, arch: string): string =
   let ext = if os == "windows": ".zip" else: ".tar.gz"
   result = "fugitive_v" & version & "_" & os & "_" & arch & ext
 
+task make, "Build fugitive for the current OS":
+  let
+    exeExt = when defined(windows): ".exe" else: ""
+    outFile = binDir / "fugitive" & exeExt
+
+  exec "nim -d:release -d:fugitiveVersion=v" & version &
+    " -o:" & outFile & " --verbosity:0 --hints:off c src/fugitive"
+
 task build_win_x64, "Build fugitive for Windows (x64)":
   exec "nimble build " & flags_win_64
 
