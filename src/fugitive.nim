@@ -48,22 +48,42 @@ proc parseInput (): Input =
 
   result = (args, opts)
 
+proc ageCmd (args: Arguments, opts: Options) =
+  if "help" in opts:
+    echo "\n" & """
+    Usage: fugitive age <username>
+
+    Display the GitHub profile age for the given <username>.
+    """
+    quit 0
+
+  argCheck(args, 1, errNoName)
+  let age = waitFor args[0].getUserAge
+  print &"{args[0]} profile age: {age}"
+
+proc reposCmd (args: Arguments, opts: Options) =
+  if "help" in opts:
+    echo "\n" & """
+    Usage: fugitive repos <username>
+
+    Display the number of public GitHub repos for <username>.
+    """
+    quit 0
+
+  argCheck(args, 1, errNoName)
+  let count = waitFor args[0].getRepoCount
+  print &"{args[0]} has {count} public repositories"
+
 proc main (command: string, args: Arguments, opts: Options): int =
   case command
-  of "age":
-    argCheck(args, 1, errNoName)
-    let age = waitFor args[0].getUserAge
-    print "{args[0]} profile age: {age}"
+  of "age": ageCmd(args, opts)
   of "alias": alias(args, opts)
   of "changelog": changelog(args, opts)
   of "install": install(args, opts)
   of "lock": lock(args, opts)
   of "mirror", "clone": mirror(args, opts)
   of "open": open(args, opts)
-  of "repos":
-    argCheck(args, 1, errNoName)
-    let count = waitFor args[0].getRepoCount
-    print "{args[0]} has {count} public repositories"
+  of "repos": reposCmd(args, opts)
   of "summary": summary(args, opts)
   of "undo": undo(args, opts)
   of "uninstall": uninstall(args, opts)
