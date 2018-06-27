@@ -20,6 +20,7 @@ const
   commitSeparator = "#++-~-~2~-~-++#"
   commitFormatParts = ["%H", "%s", "%b"]
   commitFormat = commitFormatParts.join(itemSeparator)
+  cmdFetchTags = "git fetch --tags"
   cmdGetTags = "git describe --tags --abbrev=0"
   cmdGetCommits = &"""git log -E --format="{commitFormat}{commitSeparator}" """
   commitKinds = {
@@ -132,6 +133,9 @@ proc changelog* (args: Arguments, opts: Options) =
 
   if not isGitRepo(): fail errNotRepo
 
+  if (execCmdEx cmdFetchTags).exitCode != 0:
+    fail "Failed to update tags from remote"
+
   let (lastTag, code) = execCmdEx cmdGetTags
   let rev = if code != 0: "" else: lastTag.strip & "..HEAD"
 
@@ -145,6 +149,11 @@ proc changelog* (args: Arguments, opts: Options) =
     quit 0
 
   var commitList = commits.parseCommitList
+
+  if commitList.len < 1:
+    print "No changes since " & lastTag.strip & "."
+    quit 0
+
   commitList.sort(sortCommits)
   commitList.keepIf(shouldPrint)
 
