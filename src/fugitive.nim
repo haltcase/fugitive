@@ -22,7 +22,7 @@ import fugitivepkg/git/[
   unstage
 ]
 
-const fugitiveVersion {.strdefine.} = &"(development build)"
+const fugitiveVersion {.strdefine.} = "(development build)"
 
 proc parseInput (): Input =
   var args: seq[string] = @[]
