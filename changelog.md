@@ -1,3 +1,17 @@
+<a name="v0.4.0"></a>
+### [`v0.4.0`](https://github.com/citycide/fugitive/compare/v0.3.1...v0.4.0) (2018-06-29)
+
+
+###### FEATURES
+
+* **changelog:** fetch tags before running; do nothing if no commits ([`05737f7`](https://github.com/citycide/fugitive/commit/05737f7948b530e461f862473fbe0c1d9befdbc9))
+
+###### BUG FIXES
+
+* **age,repos:** print response correctly instead of template string ([`f8ff340`](https://github.com/citycide/fugitive/commit/f8ff340de9ed75e64540d91b619aa6be43fd2a84))
+
+---
+
 <a name="v0.3.1"></a>
 ### [`v0.3.1`](https://github.com/citycide/fugitive/compare/v0.3.0...v0.3.1) (2018-06-26)
 

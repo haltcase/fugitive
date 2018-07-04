@@ -1,4 +1,4 @@
-version       = "0.3.1"
+version       = "0.4.0"
 author        = "citycide"
 description   = "Simple command line tool to make git more intuitive, along with useful GitHub addons."
 license       = "MIT"
@@ -31,7 +31,7 @@ proc getZipName (os, arch: string): string =
   let ext = if os == "windows": ".zip" else: ".tar.gz"
   result = "fugitive_v" & version & "_" & os & "_" & arch & ext
 
-task make, "Build fugitive for the current OS":
+task build_current, "Build fugitive for the current OS":
   let
     exeExt = when defined(windows): ".exe" else: ""
     outFile = binDir / "fugitive" & exeExt
@@ -49,7 +49,7 @@ task build_macos_x64, "Build fugitive for macOS (x64)":
   # exec "nimble build " & flags_macos_64
   echo "macOS compilation is not supported on other platforms yet"
 
-task release, "Build all release versions of fugitive":
+task make, "Build all release versions of fugitive":
   rmDir binDir
   for name, arch, type in platforms.items:
     # TODO: macOS compilation
