@@ -1,9 +1,11 @@
 include ../base
 
+import future
 import strformat
 from algorithm import sort
 from os import existsFile, moveFile, tryRemoveFile
-from sequtils import keepIf
+from parseutils import parseSaturatedNatural, skipUntil
+from sequtils import keepIf, map, mapIt, toSeq
 from times import getDateStr
 
 import tempfile
@@ -14,6 +16,8 @@ type
     hash: string
     header: Header
     body: string
+    closures: seq[int]
+    breaking: string
 
 const
   itemSeparator = "#&<2#@~#2>&#"
@@ -21,7 +25,7 @@ const
   commitFormatParts = ["%H", "%s", "%b"]
   commitFormat = commitFormatParts.join(itemSeparator)
   cmdFetchTags = "git fetch --tags"
-  cmdGetTags = "git describe --tags --abbrev=0"
+  cmdGetLastTag = "git describe --tags --abbrev=0"
   cmdGetCommits = &"""git log -E --format="{commitFormat}{commitSeparator}" """
   commitKinds = {
     "": (print: false, heading: ""),
@@ -34,7 +38,13 @@ const
     "refactor": (print: false, heading: ""),
     "style": (print: false, heading: ""),
     "test": (print: false, heading: ""),
+
+    # internal only types for printing commit metadata
+    "breaking": (print: true, heading: "BREAKING CHANGES")
   }.toTable
+  breakingSectionStart = "BREAKING CHANGE: "
+  closesSectionStart = "Closes #"
+  commitKindWidest = map(toSeq(keys(commitKinds)), (k) => k.len).max
   usageMessage = """
   Usage: fugitive changelog [file] [--tag|-t:<tag>] [--overwrite|-o] [--no-anchor]
 
@@ -62,7 +72,10 @@ proc parseHeader (header: string): Header =
   let openParen = header.find('(')
   let closeParen = header.find(')')
 
-  if openParen > -1:
+  # because the opening paren immediately follows the
+  # commit type, it can't possibly be further in the string
+  # than the length of the longest possible commit type + 1
+  if openParen in 0..commitKindWidest + 1:
     result = (
       kind: header[0..<openParen].strip,
       scope: header[openParen + 1..<closeParen].strip,
@@ -76,6 +89,37 @@ proc parseHeader (header: string): Header =
       desc: header[colon + 1..^1].strip
     )
 
+# parses a string of the form "Closes #1, #2, #3" into a list of issue numbers
+proc parseIssueList (closures: string): seq[int] =
+  result = @[]
+  var i = 0
+  while i < closures.len:
+    inc(i, closures.skipUntil('#', i) + 1)
+    var issue = 0
+    inc(i, closures.parseSaturatedNatural(issue, i))
+    if issue != 0: result.add issue
+
+proc parseBody (body: string): tuple[body: string, closures: seq[int], breaking: string] =
+  let breaks = body.find(breakingSectionStart)
+  let closes = body.find(closesSectionStart)
+  result.body = body
+
+  if breaks > -1:
+    result.body = body[0..<breaks]
+
+    let finish = if closes > -1: closes - 1 else: body.high
+    result.breaking = wordWrap(
+      body[breaks + breakingSectionStart.len..finish],
+      splitLongWords = false
+    )
+  else:
+    result.breaking = ""
+
+  if closes > -1:
+    result.closures = body[closes..body.high].parseIssueList
+  else:
+    result.closures = @[]
+
 proc parseCommitList (commitList: string): seq[Commit] =
   result = @[]
   for commitRaw in commitList.split commitSeparator:
@@ -85,25 +129,26 @@ proc parseCommitList (commitList: string): seq[Commit] =
     let parts = commitRaw.split(itemSeparator, 3)
     commit.hash = parts[0].strip
     commit.header = parts[1].parseHeader
-    commit.body = parts[2].strip
+    (commit.body, commit.closures, commit.breaking) = parts[2].parseBody
+
     result.add commit
+    if commit.breaking != "":
+      commit.header.kind = "breaking"
+      result.add commit
 
 proc shouldPrint (commit: Commit): bool =
   commitKinds[commit.header.kind].print
 
-proc render (commit: Commit, repoUrl: string): string =
-  result = "* "
-  if commit.header.scope != "":
-    result &= "**" & commit.header.scope & ":** "
-
-  result &= commit.header.desc
-
-  let shortHash = commit.hash[0..6]
-
-  result &= &" ([`{shortHash}`]({repoUrl}/commit/{commit.hash}))"
-
 proc sortCommits (x, y: Commit): int =
   cmp(x.header.kind, y.header.kind)
+
+
+proc cleanCommitList (commitList: var seq[Commit], lastTag: string): bool =
+  if commitList.len < 1: return false
+
+  commitList.sort(sortCommits)
+  commitList.keepIf(shouldPrint)
+  result = true
 
 proc output (dest: File, str: string) =
   dest.write(str)
@@ -126,61 +171,88 @@ proc selectFile (args: Arguments, opts: Options): tuple[fd: File, name: string, 
   else:
     result = (stdout, "", false)
 
-proc changelog* (args: Arguments, opts: Options) =
-  if "help" in opts:
-    echo "\n" & usageMessage
-    quit 0
+proc getLastTag (): tuple[lastTag, rev: string] =
+  let (lastTagRaw, code) = execCmdEx cmdGetLastTag
+  let lastTag = lastTagRaw.strip
+  result = if code != 0: (lastTag, "") else: (lastTag, lastTag & "..HEAD")
 
-  if not isGitRepo(): fail errNotRepo
+proc getNewTag (opts: Options): string =
+  if "tag" in opts: opts["tag"].strip
+  elif "t" in opts: opts["t"].strip
+  else: ""
 
-  if (execCmdEx cmdFetchTags).exitCode != 0:
-    fail "Failed to update tags from remote"
-
-  let (lastTag, code) = execCmdEx cmdGetTags
-  let rev = if code != 0: "" else: lastTag.strip & "..HEAD"
-
-  let (commits, c) = execCmdEx cmdGetCommits & rev
-  if c != 0:
-    if rev == "":
-      print "No commits found."
-    else:
-      print "No changes since " & lastTag.strip & "."
-
-    quit 0
-
-  var commitList = commits.parseCommitList
-
-  if commitList.len < 1:
-    print "No changes since " & lastTag.strip & "."
-    quit 0
-
-  commitList.sort(sortCommits)
-  commitList.keepIf(shouldPrint)
-
-  let newTag =
-    if "tag" in opts: opts["tag"].strip
-    elif "t" in opts: opts["t"].strip
-    else: ""
-
-  let repoUrl = getRepoUrl()
-
-  var title = "### "
+proc getTitle (newTag, lastTag, repoUrl: string, date = getDateStr()): string =
+  result = "### "
   if newTag != "":
-    title &= &"[`{newTag}`]({repoUrl}/compare/{lastTag.strip}...{newTag}) ("
+    result &= &"[`{newTag}`]({repoUrl}/compare/{lastTag.strip}...{newTag}) ("
 
-  title &= getDateStr()
-  if newTag != "": title &= ")"
-  title &= "\n\n"
+  result &= date
+  if newTag != "": result &= ")"
+  result &= "\n\n"
 
-  let (file, path, overwrite) = selectFile(args, opts)
+proc renderClosures (closures: seq[int], repoUrl: string): string =
+  if closures.len == 0: return ""
+
+  result = ", closes " & closures
+    .mapIt(&"[#{it}]({repoUrl}/issues/{it})")
+    .join(", ")
+
+proc render (commit: Commit, repoUrl: string): string =
+  result = "* "
+  if commit.header.scope != "":
+    result &= "**" & commit.header.scope & ":** "
+
+  if commit.header.kind == "breaking":
+    result &= commit.breaking
+    return
+
+  result &= commit.header.desc
+
+  let shortHash = commit.hash[0..6]
+  let closures = commit.closures.renderClosures(repoUrl)
+
+  result &= &" ([`{shortHash}`]({repoUrl}/commit/{commit.hash})){closures}"
+
+proc getCommitList (lastTag, rev: string, failFast = false, verbose = true): seq[Commit] =
+  let (commits, code) = execCmdEx cmdGetCommits & rev
+
+  if code != 0:
+    if verbose:
+      if rev == "":
+        print "No commits found"
+      else:
+        print "No changes since " & lastTag
+
+    if failFast: quit 0 else: return
+
+  result = commits.parseCommitList
+  if not result.cleanCommitList(lastTag) and verbose:
+    print "No changes since " & lastTag
+    if failFast: quit 0
+
+
+proc updateChangelog (
+  args: Arguments,
+  opts: Options,
+  commitList: seq[Commit],
+  lastTag: string,
+  nextTag = "",
+  date = getDateStr()
+) =
+  let
+    newTag = if nextTag != "": nextTag else: opts.getNewTag
+    repoUrl = getRepoUrl()
+    title = getTitle(newTag, lastTag, repoUrl, date)
+    (file, path, overwrite) = selectFile(args, opts)
 
   if "no-anchor" notin opts:
-    let anchor = if newTag != "": newTag else: getDateStr()
+    let anchor = if newTag != "": newTag else: date
     file.output &"<a name=\"{anchor}\"></a>\n"
 
   file.output title
 
   var headings: seq[string] = @[]
+  var closures: seq[int] = @[]
   for commit in commitList:
     if commit.header.kind notin headings:
       headings.add commit.header.kind
@@ -205,7 +277,20 @@ proc changelog* (args: Arguments, opts: Options) =
       moveFile(path, args[0])
     else:
       close file
-
-    print "changelog updated"
   else:
     close file
+
+proc changelog* (args: Arguments, opts: Options) =
+  if "help" in opts:
+    echo "\n" & usageMessage
+    quit 0
+
+  if not isGitRepo(): fail errNotRepo
+
+  if (execCmdEx cmdFetchTags).exitCode != 0:
+    fail "Failed to update tags from remote"
+
+  let (lastTag, rev) = getLastTag()
+  let commitList = getCommitList(lastTag, rev)
+  updateChangelog(args, opts, commitList, lastTag)
+  print "changelog updated"
