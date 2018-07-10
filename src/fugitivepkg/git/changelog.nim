@@ -76,6 +76,7 @@ const
     fugitive changelog changelog.md --tag:v1.1.0  # update changelog
   """
 
+# parses a string of the form "{kind}{scope?}: {desc}"
 proc parseHeader (header: string): Header =
   let openParen = header.find('(')
 
