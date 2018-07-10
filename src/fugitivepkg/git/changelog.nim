@@ -78,12 +78,12 @@ const
 
 proc parseHeader (header: string): Header =
   let openParen = header.find('(')
-  let closeParen = header.find(')')
 
   # because the opening paren immediately follows the
   # commit type, it can't possibly be further in the string
   # than the length of the longest possible commit type + 1
   if openParen in 0..commitKindWidest + 1:
+    let closeParen = header.find(')')
     result = (
       kind: header[0..<openParen].strip,
       scope: header[openParen + 1..<closeParen].strip,
