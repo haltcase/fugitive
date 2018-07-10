@@ -95,9 +95,9 @@ be prompted to provide one.
 
 ## alias installation
 
-After installation, you can make some of fugitive's commands more
-accessible by running `fugitive install`, which will attach them
-to git as subcommands, making `git undo == fugitive undo`.
+After installation, you can make some of fugitive's commands more accessible by
+running `fugitive install`, which will attach them to git as subcommands,
+making `git undo == fugitive undo`.
 
 Commands installed to git include:
 
