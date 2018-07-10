@@ -41,6 +41,8 @@ Commands:
   age       <username>           Display the age of the profile for <username>
   alias     [name [--remove|-r]] [expansion]
                                  List, add, or remove git aliases
+  config    [key] [value] [--remove|-r]
+                                 Set, update, or remove fugitive settings
   changelog [file] [--tag|-t:<tag>] [--overwrite|-o] [--no-anchor] [--init]
                                  Write changes since last tag to file or stdout
   clone     <...repos>           Alias for `fugitive mirror`
@@ -64,11 +66,32 @@ Options:
 For help on a specific command, provide the `--help`/`-h` flag _after_
 that command, ie. `fugitive changelog -h`.
 
-Some commands require that a GitHub username be configured, to allow
-for useful shorthands like `fugitive open cascade` - which, if you're
-**[@citycide](https://github.com/citycide)**, will open **[`cascade`](https://github.com/citycide/cascade)**.
-These commands ( currently including `open` & `mirror` ), will prompt
-for a username if one hasn't yet been configured.
+## configuration
+
+fugitive stores a configuration file in your user configuration directory
+called `fugitive.ini`. You can manage this file using the `fugitive config`
+command.
+
+You can, for example, tell fugitive explicitly what to use as your GitHub
+username when using various shorthand features:
+
+```shell
+fugitive config github.username <name>
+```
+
+In the future, this could be used for customization of fugitive itself.
+
+### username
+
+Some commands require that a GitHub username be configured, to allow for
+useful shorthands like `fugitive open cascade` - which, if you're
+**[@citycide](https://github.com/citycide)**, will open
+**[`cascade`](https://github.com/citycide/cascade)**.
+
+These commands, currently including `open` & `mirror`, will default to using
+your local git username (from `git config --global user.name`) but can be
+configured to use another. If no name can be found through these methods you'll
+be prompted to provide one.
 
 ## alias installation
 

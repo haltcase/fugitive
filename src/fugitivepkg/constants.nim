@@ -31,6 +31,8 @@ const
     age       <username>           Display the age of the profile for <username>
     alias     [name [--remove|-r]] [expansion]
                                    List, add, or remove git aliases
+    config    [key] [value] [--remove|-r]
+                                   Set, update, or remove fugitive settings
     changelog [file] [--tag|-t:<tag>] [--overwrite|-o] [--no-anchor] [--init]
                                    Write changes since last tag to file or stdout
     clone     <...repos>           Alias for `fugitive mirror`

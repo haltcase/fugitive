@@ -7,7 +7,7 @@ import strutils
 import tables
 
 import fugitivepkg/[constants, github, types]
-import fugitivepkg/common/cli
+import fugitivepkg/common/[cli, config]
 import fugitivepkg/git/[
   alias,
   changelog,
@@ -79,6 +79,7 @@ proc main (command: string, args: Arguments, opts: Options): int =
   of "age": ageCmd(args, opts)
   of "alias": alias(args, opts)
   of "changelog": changelog(args, opts)
+  of "config": config(args, opts)
   of "install": install(args, opts)
   of "lock": lock(args, opts)
   of "mirror", "clone": mirror(args, opts)
