@@ -50,8 +50,9 @@ const
   Usage: fugitive changelog [file] [--tag|-t:<tag>] [--overwrite|-o]
     [--no-anchor] [--init]
 
-  Write the list of all changes since the last git tag. Uses the
-  Angular commit conventions to categorize and filter commits, ie.
+  Write the list of all changes since the last git tag. Commits
+  should be formatted according to the Conventional Commits
+  specification. This is used to categorize and filter commits, ie.
   internally focused changes will not be listed.
 
   To create a new changelog from scratch, pass the `init` flag to
@@ -66,8 +67,8 @@ const
   HTML anchor elements are added for linking purposes but can be
   disabled by providing the `--no-anchor` flag.
 
-  See the Angular contributor guidelines for more information about
-  the commit conventions: https://git.io/f49fN
+  For more information about the Conventional Commits spec, see:
+  https://conventionalcommits.org/
 
   Example:
 
