@@ -146,7 +146,7 @@ proc parseCommitList (commitList: string): seq[Commit] =
       result.add commit
 
 proc shouldPrint (commit: Commit): bool =
-  commitKinds[commit.header.kind].print
+  commit.header.kind in commitKinds and commitKinds[commit.header.kind].print
 
 proc sortCommits (x, y: Commit): int =
   cmp(x.header.kind, y.header.kind)
