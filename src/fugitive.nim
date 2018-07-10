@@ -107,4 +107,4 @@ when isMainModule:
     ensure that it has been added to your PATH.
     """.strip
 
-  quit main(args[0], args[1..args.high], opts)
+  quit main(args[0], args[1..^1], opts)

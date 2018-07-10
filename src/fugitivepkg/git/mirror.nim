@@ -1,6 +1,7 @@
 include ../base
 
 from os import existsDir
+import strformat
 
 from ../github import resolveRepoURL
 
@@ -33,11 +34,11 @@ proc mirror* (args: Arguments, opts: Options) =
     echo "\n" & usageMessage
     quit 0
 
-  let dirs = parseDirArgs(opts)
+  let dirs = opts.parseDirArgs
 
   var good = 0
   for i, arg in args:
-    let url = resolveRepoURL(arg, "`clone` repo shorthand")
+    let url = resolveRepoUrl(arg, "`clone` repo shorthand")
     if url == "": continue
 
     let target =
@@ -47,11 +48,10 @@ proc mirror* (args: Arguments, opts: Options) =
     if target.existsDir:
       continue
 
-    let (res, code) = execCmdEx "git clone " & url & " " & target
+    let (res, code) = execCmdEx(&"git clone {url} {target}")
     if code != 0:
-      fail "Failed to clone into '" & target & "'" &
-        "\n " & res.strip.indent(2)
+      fail &"Failed to clone into '{target}'\n{res.strip.indent(2)}"
     else:
       good += 1
 
-  print "Clone complete (" & $good & " of " & $args.len & ")"
+  print &"Clone complete ({good} of {args.len})"

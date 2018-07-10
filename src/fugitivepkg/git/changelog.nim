@@ -66,14 +66,14 @@ proc parseHeader (header: string): Header =
     result = (
       kind: header[0..<openParen].strip,
       scope: header[openParen + 1..<closeParen].strip,
-      desc: header[closeParen + 2..header.high].strip
+      desc: header[closeParen + 2..^1].strip
     )
   else:
     let colon = header.find(':')
     result = (
       kind: header[0..<colon].strip,
       scope: "",
-      desc: header[colon + 1..header.high].strip
+      desc: header[colon + 1..^1].strip
     )
 
 proc parseCommitList (commitList: string): seq[Commit] =
