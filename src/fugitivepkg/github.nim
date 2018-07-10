@@ -8,7 +8,7 @@ import times
 
 from os import sleep
 
-import common/[cli, config, humanize]
+import common/[cli, config, humanize, util]
 
 type
   GitHubUser* = object
@@ -67,7 +67,9 @@ proc getUserAge* (username: string): Future[string] {.async.} =
 proc resolveRepoUrl* (repo: string, failMsg = "this action"): string =
   case repo.count '/'
   of 0:
-    let owner = getConfigValue("github", "username")
+    var owner = getConfigValue("github", "username")
+    if owner == "": owner = getGitUsername()
+
     if owner != "":
       result = baseUrl & owner & "/" & repo
     else:

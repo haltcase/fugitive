@@ -35,3 +35,8 @@ proc getRepoName* (): string =
   else:
     let (_, name, _) = splitFile getCurrentDir()
     result = name
+
+proc getGitUsername* (): string =
+  let (res, code) = execCmdEx "git config --global user.name"
+  if code != 0 or res == "": return ""
+  result = res.strip
