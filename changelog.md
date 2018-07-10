@@ -1,3 +1,20 @@
+<a name="v0.5.0"></a>
+### [`v0.5.0`](https://github.com/citycide/fugitive/compare/v0.4.0...v0.5.0) (2018-07-10)
+
+
+###### FEATURES
+
+* **config:** add `config` command ([`0c6bd99`](https://github.com/citycide/fugitive/commit/0c6bd99d32be98c2b1a11faa56e2b28da6bc71df))
+* **changelog:** add `init` option for starting new changelog ([`ace43f7`](https://github.com/citycide/fugitive/commit/ace43f75b05cf75975fe70b0b5ec9c5c55e720e0))
+* **changelog:** parse and render breaking changes and closures ([`27b8992`](https://github.com/citycide/fugitive/commit/27b8992f144415e43933ac6c4ef5b3e2c2b1cad9))
+* use local git username if one isnt saved ([`a6b45eb`](https://github.com/citycide/fugitive/commit/a6b45eb32cdabe102a3fb6df4ad21ad8f8a1d1c1))
+
+###### BUG FIXES
+
+* **changelog:** handle unknown commit types ([`25a654a`](https://github.com/citycide/fugitive/commit/25a654ab62b2e3edc503f121f16487b3374c861c))
+
+---
+
 <a name="v0.4.0"></a>
 ### [`v0.4.0`](https://github.com/citycide/fugitive/compare/v0.3.1...v0.4.0) (2018-06-29)
 
