@@ -25,6 +25,7 @@ const
   commitFormatParts = ["%H", "%s", "%b"]
   commitFormat = commitFormatParts.join(itemSeparator)
   cmdFetchTags = "git fetch --tags"
+  cmdGetAllTags = strip(&"""git for-each-ref --format="%(refname:short){itemSeparator}%(creatordate:short)" refs/tags/*""")
   cmdGetLastTag = "git describe --tags --abbrev=0"
   cmdGetCommits = &"""git log -E --format="{commitFormat}{commitSeparator}" """
   commitKinds = {
@@ -46,16 +47,21 @@ const
   closesSectionStart = "Closes #"
   commitKindWidest = map(toSeq(keys(commitKinds)), (k) => k.len).max
   usageMessage = """
-  Usage: fugitive changelog [file] [--tag|-t:<tag>] [--overwrite|-o] [--no-anchor]
+  Usage: fugitive changelog [file] [--tag|-t:<tag>] [--overwrite|-o]
+    [--no-anchor] [--init]
 
   Write the list of all changes since the last git tag. Uses the
   Angular commit conventions to categorize and filter commits, ie.
   internally focused changes will not be listed.
 
+  To create a new changelog from scratch, pass the `init` flag to
+  write all past tagged releases and their commits.
+
   If `file` is not provided, changes will be written to `stdout`.
 
   When the `overwrite` flag is absent, changes will be prepended
-  to `file` if it exists. Has no effect when writing to `stdout`.
+  to `file` if it exists. Has no effect when writing to `stdout`
+  or when using `--init` to create a new changelog.
 
   HTML anchor elements are added for linking purposes but can be
   disabled by providing the `--no-anchor` flag.
@@ -65,7 +71,8 @@ const
 
   Example:
 
-    fugitive changelog changelog.md --tag:v1.1.0
+    fugitive changelog changelog.md --init        # start new changelog
+    fugitive changelog changelog.md --tag:v1.1.0  # update changelog
   """
 
 proc parseHeader (header: string): Header =
@@ -142,6 +149,8 @@ proc shouldPrint (commit: Commit): bool =
 proc sortCommits (x, y: Commit): int =
   cmp(x.header.kind, y.header.kind)
 
+proc sortTags (x, y: tuple[tag, date: string]): int =
+  cmp(x.date, y.date)
 
 proc cleanCommitList (commitList: var seq[Commit], lastTag: string): bool =
   if commitList.len < 1: return false
@@ -163,7 +172,7 @@ proc getDestFile (args: Arguments): File =
 
 proc selectFile (args: Arguments, opts: Options): tuple[fd: File, name: string, overwrite: bool] =
   if args.len > 0 and args[0].len > 0:
-    if "overwrite" in opts or "o" in opts:
+    if "init" notin opts and ("overwrite" in opts or "o" in opts):
       result = (args[0].open(fmWrite), args[0], true)
     else:
       let (fd, name) = mkstemp(mode = fmWrite)
@@ -230,6 +239,19 @@ proc getCommitList (lastTag, rev: string, failFast = false, verbose = true): seq
     print "No changes since " & lastTag
     if failFast: quit 0
 
+proc parseTagList (tagInfo: string): tuple[tag, date: string] =
+  let tagInfoList = tagInfo.split(itemSeparator)
+  result = (tagInfoList[0], tagInfoList[1])
+
+proc getTagList (): seq[tuple[tag, date: string]] =
+  let (tags, code) = execCmdEx cmdGetAllTags
+
+  if code != 0:
+    fail tags
+    quit 0
+
+  result = tags.strip.splitLines.map(parseTagList)
+  result.sort(sortTags)
 
 proc updateChangelog (
   args: Arguments,
@@ -280,6 +302,29 @@ proc updateChangelog (
   else:
     close file
 
+proc initChangelog (args: Arguments, opts: Options) =
+  let tagList = getTagList()
+
+  if tagList.len == 0:
+    print "There are no tagged releases, skipping changelog creation"
+    quit 0
+
+  for i, tagInfo in tagList:
+    let
+      (tag, date) = tagInfo
+      finish = if i == tagList.high: "HEAD" else: tagList[i + 1].tag
+      rev = &"{tag}..{finish}"
+      commitList = getCommitList(tag, rev, verbose = false)
+      nextTag = if finish == "HEAD": "" else: finish
+
+    if finish == "HEAD" and commitList.len == 0:
+      # no changes between local & remote yet
+      continue
+
+    updateChangelog(args, opts, commitList, tag, nextTag, date)
+
+  print &"changelog created ({tagList.len - 1} releases)"
+
 proc changelog* (args: Arguments, opts: Options) =
   if "help" in opts:
     echo "\n" & usageMessage
@@ -289,6 +334,10 @@ proc changelog* (args: Arguments, opts: Options) =
 
   if (execCmdEx cmdFetchTags).exitCode != 0:
     fail "Failed to update tags from remote"
+
+  if "init" in opts:
+    initChangelog(args, opts)
+    quit 0
 
   let (lastTag, rev) = getLastTag()
   let commitList = getCommitList(lastTag, rev)
