@@ -72,6 +72,9 @@ fugitive stores a configuration file in your user configuration directory
 called `fugitive.ini`. You can manage this file using the `fugitive config`
 command.
 
+> TIP: Using the `fugitive config` command with no arguments will print the full
+filepath to your config file.
+
 You can, for example, tell fugitive explicitly what to use as your GitHub
 username when using various shorthand features:
 
