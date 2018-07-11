@@ -276,7 +276,6 @@ proc updateChangelog (
   file.output title
 
   var headings: seq[string] = @[]
-  var closures: seq[int] = @[]
   for commit in commitList:
     if commit.header.kind notin headings:
       headings.add commit.header.kind
