@@ -16,8 +16,9 @@ const
     fugitive open <owner>/<name>    # GitHub repository
     fugitive open <url>             # any git repository URL
 
-  <name> shorthand requires your GitHub username to be configured
-  with fugitive and will prompt if it hasn't been set yet.
+  If using the <name> shorthand, a GitHub username is required. You may
+  be prompted for one if it hasn't been configured or if it can't be
+  pulled from your local git config.
   """
 
 proc open* (args: Arguments, opts: Options) =
