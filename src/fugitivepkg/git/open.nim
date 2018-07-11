@@ -40,7 +40,7 @@ proc open* (args: Arguments, opts: Options) =
       echo "\n" & usageMessage
       quit 0
 
-  let url = resolveRepoURL(args[0], "`open` repo shorthand")
+  let url = resolveRepoUrl(args[0], "`open` repo shorthand")
 
   when not defined linux:
     openDefaultBrowser(url)
