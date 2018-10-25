@@ -56,7 +56,8 @@ Commands:
   undo      [#] [--hard|-h]      Undo the last commit ( or last # commits )
   uninstall                      Remove git aliases added by `install`
   unlock    <...files>           Resume tracking changes to these locked files
-  unstage   <...files>           Remove files from the git stage area
+  unstage   <...files> [--all|-a]
+                                  Remove files from the git stage area
 
 Options:
   --help, -h       Show this help message
