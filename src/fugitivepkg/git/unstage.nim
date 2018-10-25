@@ -3,16 +3,17 @@ include ../base
 import strformat
 
 const
-  cmdUnlockFile = "git update-index --no-skip-worktree $1"
   usageMessage = """
-  Usage: fugitive unstage <...files>
+  Usage: fugitive unstage <...files> [--all|-a]
 
-  Resume tracking changes to the specified files after having
-  previously run `fugitive lock <...files>`.
+  Remove the specified files from the git staging area. If the `--all`
+  (or `-a`) flag is provided, all currently staged files are unstaged.
+  Directories are recursively unstaged.
 
   Example
 
     fugitive unstage src/foo.nim src/bar.nim
+    fugitive unstage --all
   """
 
 proc unstage* (args: Arguments, opts: Options) =
@@ -22,7 +23,13 @@ proc unstage* (args: Arguments, opts: Options) =
 
   if not isGitRepo(): fail errNotRepo
 
-  argCheck(args, 1, "File names required.")
+  if "a" in opts or "all" in opts:
+    let (res, code) = execCmdEx "git reset"
+    if code == 0:
+      print "Files unstaged"
+      quit 0
+
+  argCheck(args, 1, "File names required")
 
   let (res, code) = execCmdEx "git reset HEAD " & args.join(" ")
 
@@ -38,12 +45,15 @@ proc unstage* (args: Arguments, opts: Options) =
     # at a time, so we'll have to run a separate command for each one
     var good = 0
     for arg in args:
-      let (res, code) = execCmdEx "git rm --cached " & arg
+      let (res, code) = execCmdEx &"git rm --cached -r {arg}"
       if code != 0:
         failSoft &"Could not unstage '{arg}'\n{res.indent(2)}"
       else:
         inc good
 
-    print &"Files unstaged ({good} of {args.len})"
+    if good == 0:
+      fail &"Failed to unstage {args.len} files"
+    else:
+      print &"Files unstaged ({good} of {args.len})"
   else:
     fail res
