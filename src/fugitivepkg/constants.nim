@@ -41,6 +41,8 @@ const
     mirror    <...repos>           Wrapper around `git clone` with various URL shorthands
     open      [repo]               Open the current or specified repository's homepage
     repos     <username>           Display the number of public repos for <username>
+    scrap     <...files>  [--all|-a]
+                                   Discard local changes to the specified files
     summary                        Summarize git repository statistics
     undo      [#] [--hard|-h]      Undo the last commit ( or last # commits )
     uninstall                      Remove git aliases added by `install`
