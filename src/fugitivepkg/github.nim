@@ -1,11 +1,4 @@
-import asyncdispatch
-import httpclient
-import json
-import strformat
-import strutils
-import tables
-import times
-
+import asyncdispatch, httpclient, json, strformat, strutils, tables, times
 from os import sleep
 
 import common/[cli, config, humanize, util]

@@ -1,6 +1,5 @@
-from strutils import normalize, strip
-
 import terminal
+from strutils import normalize, strip
 
 proc printImpl (icon, msg: string, color: ForegroundColor) =
   stdout.setForegroundColor(color)

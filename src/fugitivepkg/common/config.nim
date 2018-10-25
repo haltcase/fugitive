@@ -1,7 +1,4 @@
-import os
-import parsecfg
-import strformat
-import tables
+import os, parsecfg, strformat, tables
 from strutils import join, split, strip
 
 import ./cli

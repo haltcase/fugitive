@@ -1,7 +1,4 @@
-import osproc
-import strutils
-import tables
+import osproc, strutils, tables
 
-import ./constants
-import ./types
+import constants, types
 import common/[cli, config, util]

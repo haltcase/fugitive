@@ -1,10 +1,6 @@
 include ../base
 
-import os
-import ospaths
-import sequtils
-import strutils
-import times
+import os, sequtils, strutils, times
 
 const
   cmdGetAge = """

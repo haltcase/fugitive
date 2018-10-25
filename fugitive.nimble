@@ -10,8 +10,7 @@ srcDir        = "src"
 requires "nim >= 0.19.0 & < 0.20.0"
 requires "tempfile >= 0.1.5"
 
-import ospaths
-import strutils
+import ospaths, strutils
 
 const
   flags_win_64 = "--os:windows --cpu:amd64"

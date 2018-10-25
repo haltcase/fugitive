@@ -1,10 +1,4 @@
-import asyncdispatch
-import os
-import osproc
-import parseopt
-import strformat
-import strutils
-import tables
+import asyncdispatch, os, osproc, parseopt, strformat, strutils, tables
 
 import fugitivepkg/[constants, github, types]
 import fugitivepkg/common/[cli, config]

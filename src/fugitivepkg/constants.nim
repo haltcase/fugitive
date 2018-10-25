@@ -1,5 +1,4 @@
-import os
-import strformat
+import os, strformat
 
 const
   configFilePath* = getConfigDir() / "fugitive.ini"

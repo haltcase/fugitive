@@ -1,6 +1,6 @@
+import strutils
 from os import getCurrentDir, existsDir, splitFile
 from osproc import execCmdEx
-import strutils
 
 proc removeSuffix* (str, suffix: string): string =
   if str.endsWith(suffix): str[0..str.high - suffix.len]
