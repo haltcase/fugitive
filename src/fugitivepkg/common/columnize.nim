@@ -1,4 +1,4 @@
-import future
+import sugar
 from math import floor
 from sequtils import mapIt, distribute
 from strutils import join, repeat, spaces

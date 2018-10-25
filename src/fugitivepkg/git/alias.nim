@@ -1,8 +1,7 @@
 include ../base
 
-import future
+import strformat, sugar
 from sequtils import filter
-import strformat
 from terminal import terminalHeight
 
 import ../common/columnize

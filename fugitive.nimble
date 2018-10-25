@@ -7,8 +7,7 @@ skipExt       = @["nim"]
 binDir        = "dist"
 srcDir        = "src"
 
-# some breaking changes in `0.18.1` affect fugitive (`times`, `sugar`)
-requires "nim >= 0.18.0 & < 0.18.1"
+requires "nim >= 0.19.0 & < 0.20.0"
 requires "tempfile >= 0.1.5"
 
 import ospaths
