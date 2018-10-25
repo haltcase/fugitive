@@ -1,4 +1,4 @@
-# fugitive &middot; ![nimble](https://img.shields.io/badge/available%20on-nimble-yellow.svg?style=flat-square) ![license](https://img.shields.io/github/license/citycide/fugitive.svg?style=flat-square)
+# fugitive &middot; [![nimble](https://flat.badgen.net/badge/available%20on/nimble/yellow)](https://nimble.directory/pkg/fugitive) ![license](https://flat.badgen.net/github/license/citycide/fugitive)
 
 > Simple command line tool to make git more intuitive, along with useful GitHub addons.
 
