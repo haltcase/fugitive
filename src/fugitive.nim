@@ -84,7 +84,7 @@ proc main (command: string, args: Arguments, opts: Options): int =
   of "uninstall": uninstall(args, opts)
   of "unlock": unlock(args, opts)
   of "unstage": unstage(args, opts)
-  else: discard
+  else: fail &"unknown command '{command}'"
 
   result = 0
 
