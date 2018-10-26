@@ -83,7 +83,7 @@ proc parseHeader (header: string): Header =
   # commit type, it can't possibly be further in the string
   # than the length of the longest possible commit type + 1
   if openParen in 0..commitKindWidest + 1:
-    let closeParen = header.find(')')
+    let closeParen = header.find(')', openParen + 1)
     result = (
       kind: header[0..<openParen].strip,
       scope: header[openParen + 1..<closeParen].strip,
