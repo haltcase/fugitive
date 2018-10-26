@@ -1,3 +1,21 @@
+<a name="v0.6.0"></a>
+### [`v0.6.0`](https://github.com/citycide/fugitive/compare/v0.5.0...v0.6.0) (2018-10-26)
+
+
+###### FEATURES
+
+* **changelog:** render PR references as links ([`e81b5da`](https://github.com/citycide/fugitive/commit/e81b5dadefccd6993bb132bfa15ed039d8c34855))
+* **changelog:** don't render non-conforming commit messages ([`d052379`](https://github.com/citycide/fugitive/commit/d05237927c87541befa3626813e4e87fed632050))
+* add `scrap` command ([`60c1a41`](https://github.com/citycide/fugitive/commit/60c1a410a6608f97713e4583909dcef3c5a7104b))
+* **unstage:** add `--all` flag for unstaging all staged files ([`c771fd4`](https://github.com/citycide/fugitive/commit/c771fd45145f281ea7b335b62745c177934703e8))
+* fail on unknown commands ([`b3eb775`](https://github.com/citycide/fugitive/commit/b3eb77564d3b9770eed3c50d62a8aec3e277119e))
+
+###### PERFORMANCE
+
+* **changelog:** tiny improvement to header parser ([`a550d81`](https://github.com/citycide/fugitive/commit/a550d812d21381b6fe28073dd67813ef81470519))
+
+---
+
 <a name="v0.5.0"></a>
 ### [`v0.5.0`](https://github.com/citycide/fugitive/compare/v0.4.0...v0.5.0) (2018-07-10)
 
