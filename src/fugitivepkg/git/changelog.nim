@@ -213,6 +213,17 @@ proc renderClosures (closures: seq[int], repoUrl: string): string =
     .mapIt(&"[#{it}]({repoUrl}/issues/{it})")
     .join(", ")
 
+proc renderDescription (desc, repoUrl: string): string =
+  let openParen = desc.rfind("(#")
+  if openParen == -1: return desc
+  let closeParen = desc.find(')', openParen + 2)
+
+  result = desc[0..<openParen]
+  var pr: int
+  let skips = desc.parseSaturatedNatural(pr, start = openParen + 2)
+  result &= &"([#{pr}]({repoUrl}/pull/{pr}))" & desc[openParen + 2 + skips..^1]
+  if closeParen == -1: result &= ')'
+
 proc render (commit: Commit, repoUrl: string): string =
   result = "* "
   if commit.header.scope != "":
@@ -222,7 +233,7 @@ proc render (commit: Commit, repoUrl: string): string =
     result &= commit.breaking
     return
 
-  result &= commit.header.desc
+  result &= commit.header.desc.renderDescription(repoUrl)
 
   let shortHash = commit.hash[0..6]
   let closures = commit.closures.renderClosures(repoUrl)
@@ -329,7 +340,7 @@ proc initChangelog (args: Arguments, opts: Options) =
 
     updateChangelog(args, opts, commitList, tag, nextTag, date)
 
-  print &"changelog created ({tagList.len - 1} releases)"
+  print &"Changelog created ({tagList.len - 1} releases)"
 
 proc changelog* (args: Arguments, opts: Options) =
   if "help" in opts:
@@ -348,4 +359,4 @@ proc changelog* (args: Arguments, opts: Options) =
   let (lastTag, rev) = getLastTag()
   let commitList = getCommitList(lastTag, rev)
   updateChangelog(args, opts, commitList, lastTag)
-  print "changelog updated"
+  print "Changelog updated"
