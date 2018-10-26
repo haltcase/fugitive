@@ -91,6 +91,12 @@ proc parseHeader (header: string): Header =
     )
   else:
     let colon = header.find(':')
+
+    if colon notin 0..commitKindWidest + 1:
+      # colon expected directly after commit type but not found
+      # the empty kind will prevent this commit from printing
+      return ("", "", "")
+
     result = (
       kind: header[0..<colon].strip,
       scope: "",
