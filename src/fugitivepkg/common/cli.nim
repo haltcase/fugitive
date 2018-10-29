@@ -1,5 +1,7 @@
-import terminal
+import macros, terminal
 from strutils import normalize, strip
+
+from ../types import Options
 
 proc printImpl (icon, msg: string, color: ForegroundColor) =
   stdout.setForegroundColor(color)
@@ -39,3 +41,20 @@ proc argCheck* (args: seq[string], req: int, msg: string) =
   ## Check that the number of arguments meets a required minimum,
   ## printing a failure message and quitting if it does not.
   if args.len < req: fail msg
+
+macro getOptionValue* (opts: Options; shortName, longName: string; T: typedesc = string): untyped =
+  let typeNode = getTypeImpl(T)
+  let returnType = ($typeNode[1]).normalize
+  doAssert returnType in ["string", "int", "bool"]
+
+  let rawValue = genSym(nskLet, "rawValue")
+  result = quote do:
+    block:
+      let `rawValue` =
+        if `shortName` in `opts`: `opts`[`shortName`]
+        elif `longName` in `opts`: `opts`[`longName`]
+        else: ""
+
+      when `T` is bool: `rawValue` == "" or `rawValue`.parseBool
+      elif `T` is string: `rawValue`
+      elif `T` is int: `rawValue`.parseInt

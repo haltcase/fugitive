@@ -37,17 +37,17 @@ const
   ]
 
 proc install* (args: Arguments, opts: Options) =
-  if "help" in opts:
+  if getOptionValue(opts, "h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 
-  let noPrompt = "y" in opts or "force" in opts
+  let noPrompt = getOptionValue(opts, "y", "force", bool)
   if not noPrompt and not prompt(helpMessage):
     print "Install cancelled."
     quit 0
 
   var shouldOverwrite = false
-  if "o" in opts or "override" in opts:
+  if getOptionValue(opts, "o", "override", bool):
     if noPrompt:
       shouldOverwrite = true
       echo "  fugitive will override existing aliases."

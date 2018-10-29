@@ -86,7 +86,7 @@ proc buildRows (pairs: seq[AliasPair], longest: Longest): seq[string] =
     ]
 
 proc alias* (args: Arguments, opts: Options) =
-  if "help" in opts:
+  if getOptionValue(opts, "h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 
@@ -101,7 +101,7 @@ proc alias* (args: Arguments, opts: Options) =
     print "Git aliases ->"
     echo rows.columnize(gutter = 4)
   of 1:
-    if "remove" in opts or "r" in opts:
+    if getOptionValue(opts, "r", "remove", bool):
       let (_, code) = removeAlias args[0]
       if code != 0:
         fail &"Could not remove alias '{args[0]}'. Does it exist?"

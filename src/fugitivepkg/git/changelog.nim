@@ -343,7 +343,7 @@ proc initChangelog (args: Arguments, opts: Options) =
   print &"Changelog created ({tagList.len - 1} releases)"
 
 proc changelog* (args: Arguments, opts: Options) =
-  if "help" in opts:
+  if getOptionValue(opts, "h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 
@@ -352,7 +352,7 @@ proc changelog* (args: Arguments, opts: Options) =
   if (execCmdEx cmdFetchTags).exitCode != 0:
     fail "Failed to update tags from remote"
 
-  if "init" in opts:
+  if getOptionValue(opts, "i", "init", bool):
     initChangelog(args, opts)
     quit 0
 

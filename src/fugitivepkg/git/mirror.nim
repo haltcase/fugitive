@@ -22,20 +22,12 @@ const
   pulled from your local git config.
   """
 
-proc parseDirArgs (opts: Options): seq[string] =
-  if "d" in opts:
-    result = opts["d"].split ','
-  elif "directory" in opts:
-    result = opts["directory"].split ','
-  else:
-    result = @[]
-
 proc mirror* (args: Arguments, opts: Options) =
-  if "help" in opts or args.len < 1:
+  if getOptionValue(opts, "h", "help", bool) or args.len < 1:
     echo "\n" & usageMessage
     quit 0
 
-  let dirs = opts.parseDirArgs
+  let dirs = getOptionValue(opts, "d", "directory", string).split ','
 
   var good = 0
   for i, arg in args:

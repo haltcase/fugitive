@@ -17,13 +17,13 @@ const
   """
 
 proc unstage* (args: Arguments, opts: Options) =
-  if "help" in opts:
+  if getOptionValue(opts, "h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 
   if not isGitRepo(): fail errNotRepo
 
-  if "a" in opts or "all" in opts:
+  if getOptionValue(opts, "a", "all", bool):
     let (res, code) = execCmdEx "git reset"
     if code == 0:
       print "Files unstaged"

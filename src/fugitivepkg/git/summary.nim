@@ -67,7 +67,7 @@ proc getFileCount (): int =
   result = countLines res
 
 proc summary* (args: Arguments, opts: Options) =
-  if "help" in opts:
+  if getOptionValue(opts, "h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 

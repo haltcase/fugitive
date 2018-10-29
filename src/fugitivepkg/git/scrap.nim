@@ -19,13 +19,13 @@ const
   """
 
 proc scrap* (args: Arguments, opts: Options) =
-  if "help" in opts:
+  if getOptionValue(opts, "h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 
   if not isGitRepo(): fail errNotRepo
 
-  if "a" in opts or "all" in opts:
+  if getOptionValue(opts, "a", "all", bool):
     let (res, code) = execCmdEx "git reset --hard"
     if code == 0:
       print "All local changes discarded"
