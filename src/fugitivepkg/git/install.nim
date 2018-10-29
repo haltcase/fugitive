@@ -30,6 +30,8 @@ const
     "lock",
     "mirror",
     "open",
+    "release",
+    "scrap",
     "summary",
     "undo",
     "unlock",
