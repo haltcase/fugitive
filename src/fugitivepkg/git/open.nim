@@ -1,6 +1,6 @@
 include ../base
 
-import browsers
+import browsers, options
 
 from ../github import resolveRepoURL
 
@@ -41,12 +41,13 @@ proc open* (args: Arguments, opts: Options) =
       quit 0
 
   let url = resolveRepoUrl(args[0], "`open` repo shorthand")
+  if url.isNone: return
 
   when not defined linux:
-    openDefaultBrowser(url)
+    openDefaultBrowser(url.get)
   else:
     if "Microsoft" in readFile("/proc/sys/kernel/osrelease"):
-      let (res, code) = execCmdEx "cmd.exe /c start \"\" " & url
+      let (res, code) = execCmdEx "cmd.exe /c start \"\" " & url.get
       if code != 0: fail res
       return
 

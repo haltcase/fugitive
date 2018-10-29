@@ -1,4 +1,4 @@
-import strutils
+import options, strutils
 from os import getCurrentDir, existsDir, splitFile
 from osproc import execCmdEx
 
@@ -36,7 +36,7 @@ proc getRepoName* (): string =
     let (_, name, _) = splitFile getCurrentDir()
     result = name
 
-proc getGitUsername* (): string =
+proc getGitUsername* (): Option[string] =
   let (res, code) = execCmdEx "git config --global user.name"
-  if code != 0 or res == "": return ""
-  result = res.strip
+  if code != 0 or res == "": return
+  result = some res.strip

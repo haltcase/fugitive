@@ -1,7 +1,7 @@
 include ../base
 
+import options, strformat
 from os import existsDir
-import strformat
 
 from ../github import resolveRepoURL
 
@@ -40,11 +40,11 @@ proc mirror* (args: Arguments, opts: Options) =
   var good = 0
   for i, arg in args:
     let url = resolveRepoUrl(arg, "`clone` repo shorthand")
-    if url == "": continue
+    if url.isNone: continue
 
     let target =
-      if dirs.len >= i + 1: dirs[i]
-      else: url.split('/')[^1]
+      if dirs.len >= i + 1 and dirs[i].len > 0: dirs[i]
+      else: url.get.split('/')[^1]
 
     if target.existsDir:
       continue

@@ -1,4 +1,4 @@
-import asyncdispatch, os, osproc, parseopt, strformat, strutils, tables
+import asyncdispatch, options, os, osproc, parseopt, strformat, strutils, tables
 
 import fugitivepkg/[constants, github, types]
 import fugitivepkg/common/[cli, config]
@@ -54,7 +54,10 @@ proc ageCmd (args: Arguments, opts: Options) =
 
   argCheck(args, 1, errNoName)
   let age = waitFor args[0].getUserAge
-  print &"{args[0]} profile age: {age}"
+  if age.isSome:
+    print &"{args[0]} profile age: {age.get}"
+  else:
+    fail &"Could not retrieve profile age for '{args[0]}', does this user exist?"
 
 proc reposCmd (args: Arguments, opts: Options) =
   if "help" in opts:
@@ -67,7 +70,10 @@ proc reposCmd (args: Arguments, opts: Options) =
 
   argCheck(args, 1, errNoName)
   let count = waitFor args[0].getRepoCount
-  print &"{args[0]} has {count} public repositories"
+  if count.isSome:
+    print &"{args[0]} has {count.get} public repositories"
+  else:
+    fail &"Could not retrieve repo count for '{args[0]}', does this user exist?"
 
 proc main (command: string, args: Arguments, opts: Options): int =
   case command
