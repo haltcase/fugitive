@@ -16,6 +16,20 @@ type
     created_at*, updated_at*: string
     site_admin*: bool
 
+  GitHubRelease* = object
+    id*: int
+    body*, tag_name*: string
+    upload_url*, html_url*: string
+    created_at*, published_at*: string
+
+  GitHubAsset* = object
+    id*, size*: int
+    name*, label*, state*, content_type*: string
+    url*, browser_download_url*: string
+    created_at*, updated_at*: string
+
+  GitHubReleaseError* = object of Exception
+
 const
   baseUrl = "https://github.com/"
   baseApi = "https://api.github.com/"
@@ -59,3 +73,85 @@ proc resolveRepoUrl* (repo: string, failMsg = "this action", baseUrl = baseUrl):
         result = some baseUrl & username & "/" & repo
   of 1: result = some baseUrl & repo
   else: result = some repo
+
+template parseReleaseResponse (body: string): Option[GitHubRelease] =
+  some body.parseJson.to(GitHubRelease)
+
+template raiseReleaseError (body: string) =
+  raise newException(
+    GitHubReleaseError,
+    "Failed to create release: " & parseJson(body)["message"].getStr
+  )
+
+proc getReleaseByName* (repo, tag: string): Future[Option[GitHubRelease]] {.async.} =
+  let resolvedUrl = repo.resolveRepoUrl(baseUrl = baseApi & "repos/")
+  if resolvedUrl.isNone: return
+
+  let client = newAsyncHttpClient()
+  let url = &"{resolvedUrl.get}/releases/tags/{tag}"
+  let res = await client.get(url)
+
+  if not res.code.is2xx:
+    raiseReleaseError("Failed to fetch release: " & await res.body)
+
+  result = parseReleaseResponse(await res.body)
+
+proc createRelease* (
+  repo, tag, token: string;
+  description = "", targetCommit = "master";
+  draft = false, prerelease = false
+): Future[Option[GitHubRelease]] {.async.} =
+  let resolvedUrl = repo.resolveRepoUrl(baseUrl = baseApi & "repos/")
+  if resolvedUrl.isNone: return
+
+  result = await resolvedUrl.get.getReleaseByName(tag)
+  if result.isSome: return
+
+  let client = newAsyncHttpClient()
+  client.headers = newHttpHeaders({ "Authorization": "token " & token })
+  let res = await client.post(resolvedUrl.get & "/releases", body = $(%*{
+    "name": tag,
+    "tag_name": tag,
+    "body": description,
+    "target_commitish": if targetCommit == "": "master" else: targetCommit,
+    "draft": draft,
+    "prerelease": prerelease
+  }))
+
+  if not res.code.is2xx:
+    raiseReleaseError(await res.body)
+
+template newReleaseHeaders (token, filename: string): HttpHeaders =
+  newHttpHeaders({
+    "Authorization": "token " & token,
+    "Content-Type": "application/zip",
+    "name": filename,
+    "label": filename
+  })
+
+proc uploadReleaseFile* (
+  repo, tag, token, filepath: string;
+  description, targetCommit = "";
+  draft, prerelease = false
+): Future[Option[GitHubAsset]] {.async.} =
+  let release = await createRelease(
+    repo, tag, token, description, targetCommit, draft, prerelease
+  )
+
+  if release.isNone:
+    raiseReleaseError(
+      "Failed to upload release asset; release doesn't exist or couldn't be created."
+    )
+
+  let
+    filename = filepath.extractFilename
+    url = release.get.uploadUrl.replace("{?name,label}", "?name=" & filename)
+    client = newAsyncHttpClient()
+
+  client.headers = newReleaseHeaders(token, filename)
+  let res = await client.post(url, body = $filepath.readFile)
+
+  if not res.code.is2xx:
+    raiseReleaseError("Failed to upload release asset: " & await res.body)
+
+  result = some parseJson(await res.body).to(GitHubAsset)

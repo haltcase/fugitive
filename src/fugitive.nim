@@ -9,6 +9,7 @@ import fugitivepkg/git/[
   lock,
   mirror,
   open,
+  release,
   scrap,
   summary,
   undo,
@@ -85,6 +86,7 @@ proc main (command: string, args: Arguments, opts: Options): int =
   of "lock": lock(args, opts)
   of "mirror", "clone": mirror(args, opts)
   of "open": open(args, opts)
+  of "release": release(args, opts)
   of "repos": reposCmd(args, opts)
   of "scrap": scrap(args, opts)
   of "summary": summary(args, opts)
