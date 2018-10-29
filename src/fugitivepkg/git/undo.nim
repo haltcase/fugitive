@@ -2,11 +2,11 @@ include ../base
 
 const
   usageMessage = """
-  Usage: fugitive undo [#] [--hard|-h]
+  Usage: fugitive undo [#] [--hard|-H]
 
   Undo the latest commit or the latest <#> commits if provided.
   By default the changes in the commit are preserved but can be
-  discarded by providing the --hard (-h) flag.
+  discarded by providing the --hard (-H) flag.
 
   Example:
 

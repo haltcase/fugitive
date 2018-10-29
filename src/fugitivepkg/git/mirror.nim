@@ -7,7 +7,7 @@ from ../github import resolveRepoURL
 
 const
   usageMessage = """
-  Usage: fugitive mirror <...repos>
+  Usage: fugitive mirror <...repos> [--directory|-d:<...dirs>]
 
   Wrapper around `git clone` allowing for useful GitHub shorhands.
   Any number of repositories can be passed and can be in the
@@ -20,6 +20,15 @@ const
   If using the <name> shorthand, a GitHub username is required. You may
   be prompted for one if it hasn't been configured or if it can't be
   pulled from your local git config.
+
+  The optional `--directory` (-d) flag allows specifying the directory
+  into which the repository should be cloned. In the case of multiple
+  repositories, multiple directories can be provided in a comma
+  separated list (elements can be skipped).
+
+  Example:
+
+    fugitive mirror citycide/glob citycide/cascade citycide/fugitive -d:glob,,fugitive
   """
 
 proc mirror* (args: Arguments, opts: Options) =
