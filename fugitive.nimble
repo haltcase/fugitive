@@ -47,7 +47,7 @@ task build_macos_x64, "Build fugitive for macOS (x64)":
   # exec "nimble build " & flags_macos_64
   echo "macOS compilation is not supported on other platforms yet"
 
-task make, "Build all release versions of fugitive":
+task build_releases, "Build all release versions of fugitive":
   rmDir binDir
   for name, arch, type in platforms.items:
     # TODO: macOS compilation
