@@ -60,13 +60,12 @@ macro getOptionValue* (opts: Options; shortName, longName: string; T: typedesc =
   let rawValue = genSym(nskLet, "rawValue")
   result = quote do:
     block:
-      let `rawValue` =
-        if `shortName` in `opts`: `opts`[`shortName`]
-        elif `longName` in `opts`: `opts`[`longName`]
-        else: ""
+      let (`rawValue`, present) =
+        if `shortName` != "" and `shortName` in `opts`: (`opts`[`shortName`], true)
+        elif `longName` in `opts`: (`opts`[`longName`], true)
+        else: ("", false)
 
       when `T` is bool:
-        if `rawValue` == "": false
-        else: `rawValue`.parseBool
+        present and (`rawValue` == "" or `rawValue`.parseBool)
       elif `T` is string: `rawValue`
       elif `T` is int: `rawValue`.parseInt
