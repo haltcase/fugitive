@@ -50,7 +50,7 @@ proc mirror* (args: Arguments, opts: Options) =
     if target.existsDir:
       continue
 
-    let (res, code) = execCmdEx(&"git clone {url} {target}")
+    let (res, code) = execCmdEx(&"git clone {url.get} {target}")
     if code != 0:
       fail &"Failed to clone into '{target}'\n{res.strip.indent(2)}"
     else:
