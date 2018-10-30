@@ -88,19 +88,40 @@ username when using various shorthand features:
 fugitive config github.username <name>
 ```
 
-In the future, this could be used for customization of fugitive itself.
+Here's the full list of available settings:
+
+| setting name               | type            | default value                |
+| -------------------------- | --------------- | ---------------------------- |
+| terminal_colors            | `bool`          | on                           |
+| github.username            | `string`        | -                            |
+
+> Settings of the type `bool` are retrieved using Nim's [`parseBool`][nimparsebool],
+so they can be set to any of `y`, `yes`, `true`, `1`, `on` or `n`, `no`, `false`, `0`, `off`.
 
 ### username
 
-Some commands require that a GitHub username be configured, to allow for
-useful shorthands like `fugitive open cascade` - which, if you're
-**[@citycide](https://github.com/citycide)**, will open
-**[`cascade`](https://github.com/citycide/cascade)**.
+Some commands support a shorthand for referring to GitHub repositories,
+provided you've configured your GitHub username or it can be inferred
+from your git config.
 
-These commands, currently including `open` & `mirror`, will default to using
-your local git username (from `git config --global user.name`) but can be
-configured to use another. If no name can be found through these methods you'll
-be prompted to provide one.
+#### `<name>`
+
+The simplest shorthand is for referencing one of your own repositories,
+which you can do by simply entering its name. For example if you're
+**[@citycide][citycide]**, entering `fugitive open cascade` would open
+your browser to **[`cascade`][cascade]**.
+
+#### `<owner>/<name>`
+
+You can also use any `<owner>/<project>` combination you'd like, such as:
+
+* `fugitive open nim-lang/nim`
+* `fugitive mirror soasme/nim-markdown`
+
+By default fugitive will use your local git username (from
+`git config --global user.name`) for these shorthands but you can explicitly
+set it yourself. You'll also be prompted to provide it if you try to use
+these shorthands and fugitive isn't able to infer it.
 
 ## alias installation
 
