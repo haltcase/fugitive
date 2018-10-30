@@ -159,33 +159,37 @@ be attached to git, while `clone` is just an alias for convenience.
 
 ## building
 
-To build fugitive from source you'll need to have [Nim][nim] installed,
-and should also have [Nimble][nimble], Nim's package manager.
+To build fugitive from source you'll need to install [Nim][nim] and its package
+manager [Nimble][nimble].
 
-> currently, building should work on most platforms. cross-compilation
+> Currently, building should work on most platforms. Cross-compilation
 (building for other platforms than the current one) is only tested on
-a unix system
+a unix system.
 
 1. Clone the repo: `git clone https://github.com/citycide/fugitive.git`
 2. Move into the newly cloned directory: `cd fugitive`
 3. Install dependencies: `nimble install`
-4. Compile for your platform: `nimble build` (development) or `nimble make` (release)
+4. Compile for your platform: `nimble build` (development)
 5. Compile for other platforms: run `nimble tasks` for available commands
-6. Compile all release versions: `nimble release`
+6. Compile all release versions: `nimble build_releases`
    - this will generate and package prebuilt binaries for all supported
      cross-compile targets
 
 ## contributing
 
-You can check the [issues](https://github.com/citycide/fugitive/issues) for
-anything unresolved, search for a problem you're encountering, or open a new
-one. Pull requests for improvements are also welcome.
+This project is open to contributions of all kinds! Please check and search
+the [issues](https://github.com/citycide/fugitive/issues) if you encounter a
+problem before opening a new one. Pull requests for improvements are also
+welcome &mdash; see the steps above for [development](#building).
 
 ## license
 
 MIT © [Bo Lingen / citycide](https://github.com/citycide)
 
 [gitextras]: https://github.com/tj/git-extras
+[gittown]: https://github.com/Originate/git-town
 [nim]: https://nim-lang.org
 [nimble]: https://github.com/nim-lang/nimble
-[gittown]: https://github.com/Originate/git-town
+[citycide]: https://github.com/citycide
+[cascade]: https://github.com/citycide/cascade
+[nimparsebool]: https://nim-lang.org/docs/strutils.html#parseBool%2Cstring
