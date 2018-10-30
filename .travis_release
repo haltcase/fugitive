@@ -1,0 +1,25 @@
+#! /bin/bash
+
+set -u # error on undefined variables
+set -e # exit on first error
+
+echo_run () {
+  printf "\n$*\n"
+  "$@"
+}
+
+asset=$(find dist/fugitive_v*)
+notesFile=dist/notes.md
+
+# create a file with only this tag's release notes
+echo_run fugitive changelog $notesFile \
+  -t:$TRAVIS_TAG \
+  --no-anchor --no-title --no-divider \
+  -o
+
+# upload the release asset to GitHub
+echo_run fugitive release $TRAVIS_TAG \
+  -r:"$TRAVIS_REPO_SLUG" \
+  -f:"$asset" \
+  -D:"$notesFile" \
+  -p -N

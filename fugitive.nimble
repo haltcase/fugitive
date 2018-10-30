@@ -10,7 +10,7 @@ srcDir        = "src"
 requires "nim >= 0.19.0 & < 0.20.0"
 requires "tempfile >= 0.1.5"
 
-import ospaths, strutils
+import ospaths, strformat, strutils
 
 const
   flags_win_64 = "--os:windows --cpu:amd64"
@@ -21,31 +21,52 @@ const
     ("linux", "amd64", "x64"),
     ("macos", "amd64", "x64")
   ]
+  distFiles = @["license", "readme.md", "changelog.md"]
   build =
     "nim --cpu:$1 --os:$2 -d:release -d:fugitiveVersion=v$3 " &
     "-o:$4 --verbosity:0 --hints:off c src/fugitive"
 
 proc getZipName (os, arch: string): string =
   let ext = if os == "windows": ".zip" else: ".tar.gz"
-  result = "fugitive_v" & version & "_" & os & "_" & arch & ext
+  result = &"fugitive_v{version}_{os}_{arch}{ext}"
 
-task build_current, "Build fugitive for the current OS":
-  let
-    exeExt = when defined(windows): ".exe" else: ""
-    outFile = binDir / "fugitive" & exeExt
+task build_current, "Build fugitive for the current OS (release)":
+  mkDir binDir
 
-  exec "nim -d:release -d:fugitiveVersion=v" & version &
-    " -o:" & outFile & " --verbosity:0 --hints:off c src/fugitive"
+  let outFile = "fugitive." & ExeExt
+  let outPath = binDir / outFile
 
-task build_win_x64, "Build fugitive for Windows (x64)":
-  exec "nimble build " & flags_win_64
+  exec "nim c -o:" & outPath & " --verbosity:0 --hints:off -d:release " &
+    "-d:fugitiveVersion=v" & version & "  " & srcDir / bin[0]
 
-task build_linux_x64, "Build fugitive for Linux (x64)":
-  exec "nimble build " & flags_linux_64
+  let zipName = getZipName(buildOS, buildCPU).multiReplace(
+    ("_amd64", "_x64"),
+    ("macosx", "macos")
+  )
+  let params = join(@[zipName, outFile] & distFiles, " ")
+  rmFile zipName
+  for distFile in distFiles:
+    cpFile(distFile, binDir / distFile)
 
-task build_macos_x64, "Build fugitive for macOS (x64)":
-  # exec "nimble build " & flags_macos_64
-  echo "macOS compilation is not supported on other platforms yet"
+  withDir binDir:
+    if buildOS == "windows":
+      exec "7z a -tzip " & params
+    else:
+      exec "tar -czf " & params
+
+  echo zipName
+
+task build_win_x64, "Build fugitive for Windows (development)":
+  exec &"nimble build {flags_win_64}"
+
+task build_linux_x64, "Build fugitive for Linux (development)":
+  exec &"nimble build {flags_linux_64}"
+
+task build_macos_x64, "Build fugitive for macOS (development)":
+  if buildOS == "macosx":
+    exec &"nimble build"
+  else:
+    echo "macOS compilation is not supported on other platforms"
 
 task build_releases, "Build all release versions of fugitive":
   rmDir binDir
@@ -57,20 +78,21 @@ task build_releases, "Build all release versions of fugitive":
     let
       folder = name & "-" & type
       outDir = binDir / folder
-      exeExt = if name == "windows": ".exe" else: ""
-      outFile = outDir / "fugitive" & exeExt
+      outFile = outDir / "fugitive." & ExeExt
 
     mkDir outDir
+    for distFile in distFiles:
+      cpFile(distFile, outDir / distFile)
     exec build % [arch, name, version, outFile]
 
     let zipName = getZipName(name, type)
-    let params = zipName & " " & folder
+    let params = join(@[zipName, folder] & distFiles, " ")
 
-    withDir "dist":
+    withDir binDir:
       if name == "windows":
-        exec "zip -9rq " & params
+        exec "7z a " & params
       else:
-        exec "tar cfz " & params
+        exec "tar -czf " & params
 
-    echo "dist" / zipName
+    echo binDir / zipName
     echo ""
