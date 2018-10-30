@@ -1,10 +1,11 @@
 import asyncdispatch, options, os, osproc, parseopt, strformat, strutils, tables
 
 import fugitivepkg/[constants, github, types]
-import fugitivepkg/common/[cli, config]
-import fugitivepkg/git/[
+import fugitivepkg/common/[cli, configfile]
+import fugitivepkg/commands/[
   alias,
   changelog,
+  config,
   install,
   lock,
   mirror,
@@ -20,6 +21,10 @@ import fugitivepkg/git/[
 
 const fugitiveVersion {.strdefine.} = "(development build)"
 
+proc showHelp () =
+  let args = if isColorEnabled(): helpInfoColor else: helpInfo
+  echo helpTemplate % args
+
 proc parseInput (): Input =
   var args: seq[string] = @[]
   var opts = initTable[string, string]()
@@ -32,7 +37,7 @@ proc parseInput (): Input =
       case key
       of "help", "h":
         if idx == 0:
-          echo help
+          showHelp()
           quit 0
         else:
           opts["help"] = val
@@ -101,7 +106,7 @@ proc main (command: string, args: Arguments, opts: Options): int =
 when isMainModule:
   let (args, opts) = parseInput()
   if args.len == 0 and opts.len == 0:
-    echo help
+    showHelp()
     quit 0
 
   # check whether git is accessible

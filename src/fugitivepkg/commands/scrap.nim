@@ -1,6 +1,5 @@
 include ../base
 
-import strformat
 from sequtils import mapIt
 
 const

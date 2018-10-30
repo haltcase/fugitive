@@ -1,6 +1,6 @@
 include ../base
 
-import options, strformat
+import options
 from os import existsDir
 
 from ../github import resolveRepoURL

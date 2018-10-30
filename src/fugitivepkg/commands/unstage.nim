@@ -1,7 +1,5 @@
 include ../base
 
-import strformat
-
 const
   usageMessage = """
   Usage: fugitive unstage <...files> [--all|-a]

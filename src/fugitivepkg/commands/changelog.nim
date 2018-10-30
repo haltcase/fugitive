@@ -1,6 +1,6 @@
 include ../base
 
-import strformat, sugar
+import sugar
 from algorithm import sort
 from os import existsFile, moveFile, tryRemoveFile
 from parseutils import parseSaturatedNatural, skipUntil

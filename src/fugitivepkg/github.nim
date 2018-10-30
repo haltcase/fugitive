@@ -1,7 +1,7 @@
 import asyncdispatch, httpclient, json, options, strformat, strutils, sugar, tables, times
 from os import getEnv, extractFilename
 
-import common/[cli, config, humanize, util]
+import common/[cli, configfile, humanize, util]
 
 type
   GitHubUser* = object

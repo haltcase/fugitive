@@ -1,9 +1,4 @@
-import os, parsecfg, strformat, tables
-from strutils import join, split, strip
-
-import ./cli
-import ../constants
-import ../types
+include ../base
 
 const
   usageMessage = """
@@ -23,29 +18,10 @@ const
     fugitive config github.username -r        # remove the setting
   """
 
-proc loadSettings* (): Config =
-  getConfigDir().createDir()
-  try:
-    result = loadConfig(configFilePath)
-  except IOError:
-    var cfg = newConfig()
-    cfg.writeConfig(configFilePath)
-    result = cfg
-
-proc getConfigValue* (section, key: string): string =
-  let cfg = loadSettings()
-  result = cfg.getSectionValue(section, key)
-
-proc setConfigValue* (section, key, value: string): string =
-  var cfg = loadSettings()
-  cfg.setSectionKey(section, key, value)
-  cfg.writeConfig(configFilePath)
-  result = value
-
-proc remConfigValue* (section, key: string) =
-  var cfg = loadConfig(configFilePath)
-  cfg.delSectionKey(section, key)
-  cfg.writeConfig(configFilePath)
+  knownSettings* = {
+    "terminal_colors": "bool",
+    "github.username": "string"
+  }.toTable
 
 proc parseKey (key: string): tuple[section, key: string] =
   let keys = key.split('.', 1)
@@ -79,6 +55,12 @@ proc config* (args: Arguments, opts: Options) =
     print &"{section}.{key} = {res}"
   elif args.len >= 2:
     let value = args[1..^1].join(" ")
+
+    if knownSettings.getOrDefault(key, "string") == "bool":
+      try:
+        discard value.parseBool
+      except:
+        fail "{key} must be a parseable as a boolean value (true, no, on, off, etc)."
+
     let res = setConfigValue(section, key, value)
     print &"Value updated ({section}.{key} = {res})"
-

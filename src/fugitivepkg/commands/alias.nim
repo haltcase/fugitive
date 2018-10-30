@@ -1,6 +1,6 @@
 include ../base
 
-import strformat, sugar
+import sugar
 from sequtils import filter
 from terminal import terminalHeight
 

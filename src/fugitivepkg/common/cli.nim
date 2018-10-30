@@ -1,12 +1,22 @@
 import macros, terminal
-from strutils import normalize, strip
+from strutils import normalize, parseBool, strip
 
+from configfile import getConfigValue
 from ../types import Options
 
-proc printImpl (icon, msg: string, color: ForegroundColor) =
-  stdout.setForegroundColor(color)
-  stdout.write(icon)
+proc isColorEnabled* (): bool =
+  let useColor = getConfigValue("user", "terminal_colors")
+  result = useColor == "" or useColor.parseBool
+
+template prettyPrint* (color: ForegroundColor, body: typed) =
+  if isColorEnabled():
+    stdout.setForegroundColor(color)
+  body
   resetAttributes()
+
+proc printImpl (icon, msg: string, color: ForegroundColor) =
+  prettyPrint color:
+    stdout.write(icon)
   stdout.write(msg)
 
 proc print* (msg: string) =

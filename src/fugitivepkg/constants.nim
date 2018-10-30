@@ -1,4 +1,4 @@
-import os, strformat
+import os, terminal
 
 const
   configFilePath* = getConfigDir() / "fugitive.ini"
@@ -11,22 +11,24 @@ const
 
 # usage strings
 
-# TODO: when upgrading to nim 0.18.1+ these might be able to be
-# dropped in favor of new procs in the `terminal` module
-const reset = "\e[0m"
-proc yellow* (s: string): string = "\e[33m" & s & reset
-proc bold* (s: string): string = "\e[1m" & s & reset
+proc yellow* (s: static[string]): string =
+  ansiForegroundColorCode(fgYellow, false) & s & ansiResetCode
+
+proc bold* (s: static[string]): string =
+  ansiStyleCode(styleBright) & s & ansiResetCode
 
 const
-  project = "fugitive".yellow
-  usage = "Usage".bold
-  commands = "Commands".bold
-  options = "Options".bold
-  help* = &"""
+  project = "fugitive"
+  usage = "Usage"
+  commands = "Commands"
+  options = "Options"
+  helpInfo* = [project, usage, commands, options]
+  helpInfoColor* = [project.yellow, usage.bold, commands.bold, options.bold]
+  helpTemplate* = """
 
-  {usage}: {project} [command] [...args] [...options]
+  $2: $1 [command] [...args] [...options]
 
-  {commands}:
+  $3:
     age       <username>           Display the age of the profile for <username>
     alias     [name [--remove|-r]] [expansion]
                                    List, add, or remove git aliases
@@ -53,7 +55,7 @@ const
     unstage   <...files> [--all|-a]
                                    Remove files from the git stage area
 
-  {options}:
+  $4:
     --help, -h       Show this help message
-    --version, -v    Output the {project} version number
+    --version, -v    Output the $1 version number
   """
