@@ -47,7 +47,7 @@ const
   commitKindWidest = map(toSeq(keys(commitKinds)), (k) => k.len).max
   usageMessage = """
   Usage: fugitive changelog [file] [--tag|-t:<tag>] [--overwrite|-o]
-    [--no-anchor] [--init]
+    [--no-anchor] [--no-title] [--no-divider] [--init]
 
   Write the list of all changes since the last git tag. Commits
   should be formatted according to the Conventional Commits
@@ -64,7 +64,9 @@ const
   or when using `--init` to create a new changelog.
 
   HTML anchor elements are added for linking purposes but can be
-  disabled by providing the `--no-anchor` flag.
+  disabled by providing the `--no-anchor` flag. Title headers can
+  be disabled with `--no-title` and the divider line between
+  versions can be disabled with `no-divider`.
 
   For more information about the Conventional Commits spec, see:
   https://conventionalcommits.org/
@@ -179,7 +181,7 @@ proc getDestFile (args: Arguments): File =
 
 proc selectFile (args: Arguments, opts: Options): tuple[fd: File, name: string, overwrite: bool] =
   if args.len > 0 and args[0].len > 0:
-    if "init" notin opts and ("overwrite" in opts or "o" in opts):
+    if "init" notin opts and getOptionValue(opts, "o", "overwrite", bool):
       result = (args[0].open(fmWrite), args[0], true)
     else:
       let (fd, name) = mkstemp(mode = fmWrite)
@@ -282,14 +284,15 @@ proc updateChangelog (
   let
     newTag = if nextTag != "": nextTag else: opts.getNewTag
     repoUrl = getRepoUrl()
-    title = getTitle(newTag, lastTag, repoUrl, date)
     (file, path, overwrite) = selectFile(args, opts)
 
-  if "no-anchor" notin opts:
+  if not getOptionValue(opts, "", "no-anchor", bool):
     let anchor = if newTag != "": newTag else: date
     file.output &"<a name=\"{anchor}\"></a>\n"
 
-  file.output title
+  if not getOptionValue(opts, "", "no-title", bool):
+    let title = getTitle(newTag, lastTag, repoUrl, date)
+    file.output title
 
   var headings: seq[string] = @[]
   for commit in commitList:
@@ -299,23 +302,25 @@ proc updateChangelog (
 
     file.output commit.render(repoUrl) & "\n"
 
-  file.output "\n---\n\n"
+  if not getOptionValue(opts, "", "no-divider", bool):
+    file.output "\n---\n\n"
 
-  if path != "":
-    # non-stdout handling
-    if not overwrite:
-      let origFile = args.getDestFile
+  if path == "":
+    # writing to stdout, quit to prevent polluting output
+    quit 0
 
-      if origFile != stdin:
-        for line in origFile.lines:
-          file.output line & "\n"
-        close origFile
+  # non-stdout handling
+  if not overwrite:
+    let origFile = args.getDestFile
 
-      close file
-      discard tryRemoveFile(args[0])
-      moveFile(path, args[0])
-    else:
-      close file
+    if origFile != stdin:
+      for line in origFile.lines:
+        file.output line & "\n"
+      close origFile
+
+    close file
+    discard tryRemoveFile(args[0])
+    moveFile(path, args[0])
   else:
     close file
 
@@ -352,7 +357,7 @@ proc changelog* (args: Arguments, opts: Options) =
   if (execCmdEx cmdFetchTags).exitCode != 0:
     fail "Failed to update tags from remote"
 
-  if getOptionValue(opts, "i", "init", bool):
+  if getOptionValue(opts, "", "init", bool):
     initChangelog(args, opts)
     quit 0
 
