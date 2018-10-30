@@ -65,6 +65,8 @@ macro getOptionValue* (opts: Options; shortName, longName: string; T: typedesc =
         elif `longName` in `opts`: `opts`[`longName`]
         else: ""
 
-      when `T` is bool: `rawValue` == "" or `rawValue`.parseBool
+      when `T` is bool:
+        if `rawValue` == "": false
+        else: `rawValue`.parseBool
       elif `T` is string: `rawValue`
       elif `T` is int: `rawValue`.parseInt
