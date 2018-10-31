@@ -1,3 +1,13 @@
+<a name="v0.7.1"></a>
+### [`v0.7.1`](https://github.com/citycide/fugitive/compare/v0.7.0...v0.7.1) (2018-10-30)
+
+There are no user facing changes in this release, other than a possible change
+to distributed release files. Versions of fugitive for the three major platforms
+should now be deployed automatically on new releases &mdash; that includes
+Windows, Linux, & macOS.
+
+---
+
 <a name="v0.7.0"></a>
 ### [`v0.7.0`](https://github.com/citycide/fugitive/compare/v0.6.0...v0.7.0) (2018-10-30)
 
