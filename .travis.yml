@@ -19,7 +19,8 @@ install:
   - |
     if [ $TRAVIS_OS_NAME != windows ]; then
       export CHOOSENIM_CHOOSE_VERSION=stable
-      curl https://nim-lang.org/choosenim/init.sh -sSf | sh
+      curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
+      sh init.sh -y
     fi
   - |
     if [ $TRAVIS_OS_NAME == windows ]; then
