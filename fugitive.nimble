@@ -1,4 +1,4 @@
-version       = "0.7.2"
+version       = "0.8.0"
 author        = "citycide"
 description   = "Simple command line tool to make git more intuitive, along with useful GitHub addons."
 license       = "MIT"

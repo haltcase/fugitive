@@ -1,3 +1,18 @@
+<a name="v0.8.0"></a>
+### [`v0.8.0`](https://github.com/citycide/fugitive/compare/v0.7.2...v0.8.0) (2018-10-31)
+
+
+###### FEATURES
+
+* **release:** output success & failure messages ([`a3c5bf0`](https://github.com/citycide/fugitive/commit/a3c5bf06726ebc3a05701186b5e0cc8d31d6c803))
+
+###### BUG FIXES
+
+* **release:** correct bad json parsing & url formation ([`9f2308b`](https://github.com/citycide/fugitive/commit/9f2308bc631888375b689af0241ea3b32248896f))
+* **cli:** stop lower casing input ([`fd45062`](https://github.com/citycide/fugitive/commit/fd4506224c5129669ef34d11ac132c6ceb9d2c85))
+
+---
+
 <a name="v0.7.2"></a>
 ### [`v0.7.2`](https://github.com/citycide/fugitive/compare/v0.7.1...v0.7.2) (2018-10-30)
 
