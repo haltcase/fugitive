@@ -46,8 +46,8 @@ const
   closesSectionStart = "Closes #"
   commitKindWidest = map(toSeq(keys(commitKinds)), (k) => k.len).max
   usageMessage = """
-  Usage: fugitive changelog [file] [--tag|-t:<tag>] [--overwrite|-o]
-    [--no-anchor] [--no-title] [--no-divider] [--init]
+  Usage: fugitive changelog [file] [--tag|-t:<tag>] [--last-tag|-l:<tag>]
+    [--overwrite|-o] [--no-anchor] [--no-title] [--no-divider] [--init]
 
   Write the list of all changes since the last git tag. Commits
   should be formatted according to the Conventional Commits
@@ -358,7 +358,16 @@ proc changelog* (args: Arguments, opts: Options) =
     initChangelog(args, opts)
     quit 0
 
-  let (lastTag, rev) = getLastTag()
+  let
+    nextTag = getOptionValue(opts, "t", "tag")
+    revEnd = if nextTag == "": "HEAD" else: nextTag
+    lastOpt = getOptionValue(opts, "l", "last-tag")
+    (lastTag, rev) =
+      if lastOpt != "":
+        (lastOpt, &"{lastOpt}..{revEnd}")
+      else:
+        getLastTag()
+
   let commitList = getCommitList(lastTag, rev)
-  updateChangelog(args, opts, commitList, lastTag)
+  updateChangelog(args, opts, commitList, lastTag, nextTag)
   print "Changelog updated"
