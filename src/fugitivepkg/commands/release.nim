@@ -83,6 +83,12 @@ proc release* (args: Arguments, opts: Options) =
         getOptionValue(opts, "N", "draft", bool),
         getOptionValue(opts, "p", "prerelease", bool)
       )
+
+      if releaseOption.isSome:
+        print "Release created at: " & releaseOption.get.htmlUrl
+      else:
+        # TODO: make sure this can't happen?
+        fail "Couldn't create release for an unknown reason."
     except GitHubReleaseError as e:
       fail e.msg
   else:
@@ -97,5 +103,11 @@ proc release* (args: Arguments, opts: Options) =
         getOptionValue(opts, "N", "draft", bool),
         getOptionValue(opts, "p", "prerelease", bool)
       )
+
+      if uploadedFile.isSome:
+        print "Release created at: " & uploadedFile.get.browserDownloadUrl
+      else:
+        # TODO: make sure this can't happen?
+        fail "Couldn't upload file for an unknown reason."
     except GitHubReleaseError as e:
       fail e.msg
