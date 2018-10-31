@@ -1,3 +1,17 @@
+<a name="v0.7.0"></a>
+### [`v0.7.0`](https://github.com/citycide/fugitive/compare/v0.6.0...v0.7.0) (2018-10-30)
+
+
+###### FEATURES
+
+* support disabling colors ([`26b6665`](https://github.com/citycide/fugitive/commit/26b66657f90455efe41d3e3e5c2c306a9446a0fc))
+* add `release` command ([`53235f3`](https://github.com/citycide/fugitive/commit/53235f3bd7b6884094f4625521c75603e58f8734))
+* **changelog:** elide leading newline when possible ([`fb904e5`](https://github.com/citycide/fugitive/commit/fb904e51c5c5b98c7e820a40439c07b01447701e))
+* **changelog:** add options for disabling more content ([`68528c8`](https://github.com/citycide/fugitive/commit/68528c8919716b9985c2fecef9adc75ed3bcb828))
+* **install:** add release & scrap to alias list ([`8375bd0`](https://github.com/citycide/fugitive/commit/8375bd017af92a54a208bafdf53a88a9053af850))
+
+---
+
 <a name="v0.6.0"></a>
 ### [`v0.6.0`](https://github.com/citycide/fugitive/compare/v0.5.0...v0.6.0) (2018-10-26)
 
