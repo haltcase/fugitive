@@ -22,4 +22,4 @@ echo_run fugitive release $TRAVIS_TAG \
   -r:"$TRAVIS_REPO_SLUG" \
   -f:"$asset" \
   -D:"$notesFile" \
-  -p -N
+  -p
