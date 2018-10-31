@@ -54,19 +54,19 @@ const
   specification. This is used to categorize and filter commits, ie.
   internally focused changes will not be listed.
 
-  To create a new changelog from scratch, pass the `init` flag to
+  To create a new changelog from scratch, pass the `--init` flag to
   write all past tagged releases and their commits.
 
   If `file` is not provided, changes will be written to `stdout`.
 
-  When the `overwrite` flag is absent, changes will be prepended
+  When the `--overwrite` flag is absent, changes will be prepended
   to `file` if it exists. Has no effect when writing to `stdout`
   or when using `--init` to create a new changelog.
 
   HTML anchor elements are added for linking purposes but can be
   disabled by providing the `--no-anchor` flag. Title headers can
   be disabled with `--no-title` and the divider line between
-  versions can be disabled with `no-divider`.
+  versions can be disabled with `--no-divider`.
 
   For more information about the Conventional Commits spec, see:
   https://conventionalcommits.org/
