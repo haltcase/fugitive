@@ -83,11 +83,13 @@ template raiseReleaseError (body: string, prefix = "Failed to create release: ")
     prefix & " " & (if body == "": body else: parseJson(body)["message"].getStr)
   )
 
-proc getReleaseByName* (repo, tag: string): Future[Option[GitHubRelease]] {.async.} =
+proc getReleaseByName* (repo, tag: string; token = ""): Future[Option[GitHubRelease]] {.async.} =
   let resolvedUrl = repo.resolveRepoUrl(baseUrl = baseApi & "repos/")
   if resolvedUrl.isNone: return
 
   let client = newAsyncHttpClient()
+  if token != "":
+    client.headers = newHttpHeaders({ "Authorization": "token " & token })
   let url = &"{resolvedUrl.get}/releases/tags/{tag}"
   let res = await client.get(url)
 
@@ -106,7 +108,7 @@ proc createRelease* (
   let resolvedUrl = repo.resolveRepoUrl(baseUrl = baseApi & "repos/")
   if resolvedUrl.isNone: return
 
-  result = await resolvedUrl.get.getReleaseByName(tag)
+  result = await resolvedUrl.get.getReleaseByName(tag, token)
   if result.isSome: return
 
   let client = newAsyncHttpClient()
