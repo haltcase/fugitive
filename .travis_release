@@ -8,12 +8,14 @@ echo_run () {
   "$@"
 }
 
-asset=$(find dist/fugitive_v*)
+prevTag=$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1 --max-count=1`)
+asset=$(find dist/fugitive_v* -print -quit)
 notesFile=dist/notes.md
 
 # create a file with only this tag's release notes
 echo_run fugitive changelog $notesFile \
   -t:$TRAVIS_TAG \
+  -l:$prevTag \
   --no-anchor --no-title --no-divider \
   -o
 
