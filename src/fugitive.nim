@@ -32,7 +32,7 @@ proc parseInput (): Input =
   for kind, key, val in getopt():
     inc idx
     case kind
-    of cmdArgument: args.add(key.toLowerAscii)
+    of cmdArgument: args.add(key)
     of cmdLongOption, cmdShortOption:
       case key
       of "help", "h":
@@ -44,7 +44,7 @@ proc parseInput (): Input =
       of "version", "v":
         echo "fugitive " & fugitiveVersion
         quit 0
-      else: opts[key.toLowerAscii] = val.toLowerAscii
+      else: opts[key] = val
     else: discard
 
   result = (args, opts)
