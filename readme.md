@@ -52,7 +52,8 @@ Commands:
   mirror    <...repos>           Wrapper around `git clone` with various URL shorthands
   open      [repo]               Open the current or specified repository's homepage
   release   <tag> [--repo|-r:<repo>] [--file|-f:<filepath>] [--description|-d:<desc>]
-            [--draft|-D] [--prerelease|-p] [--targetCommit|-T:<commitish>]
+            [--desc-file|-D:<filepath>] [--draft|-N] [--prerelease|-p]
+            [--target-commit|-T:<commitish>]
                                  Create a GitHub release and/or upload assets to a release
   repos     <username>           Display the number of public repos for <username>
   scrap     <...files>  [--all|-a]

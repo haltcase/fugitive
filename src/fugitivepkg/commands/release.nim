@@ -8,7 +8,8 @@ const
   usageMessage = """
   Usage: fugitive release <tag> [--repo|-r:<repo>]
     [--file|-f:<filepath>] [--description|-d:<desc>]
-    [--draft|-D] [--prerelease|-p] [--targetCommit|-T:<commitish>]
+    [--desc-file|-D:<filepath>] [--draft|-N] [--prerelease|-p]
+    [--target-commit|-T:<commitish>]
 
   Create a GitHub release and/or upload assets to a release.
   A GitHub token with the appropriate scope (usually `public_repo`)
@@ -27,7 +28,7 @@ const
     --repo:<url>            # any git repository URL
 
   Since `description` will likely contain special characters such as
-  double quotes or backticks, either use `--descFile` (-b) instead or
+  double quotes or backticks, either use `--desc-file` (-D) instead or
   make sure to escape it yourself which is shell-specific. These might work:
 
     # powershell
@@ -64,7 +65,7 @@ proc release* (args: Arguments, opts: Options) =
   if token == "":
     fail "A GitHub token is required to modify releases."
 
-  let descFile = getOptionValue(opts, "b", "descFile")
+  let descFile = getOptionValue(opts, "D", "desc-file")
   let description =
     if descFile != "": descFile.readFile
     else: getOptionValue(opts, "d", "description")
@@ -76,8 +77,8 @@ proc release* (args: Arguments, opts: Options) =
         args[0],
         token,
         description,
-        getOptionValue(opts, "T", "targetCommit"),
-        getOptionValue(opts, "D", "draft", bool),
+        getOptionValue(opts, "T", "target-commit"),
+        getOptionValue(opts, "N", "draft", bool),
         getOptionValue(opts, "p", "prerelease", bool)
       )
     except GitHubReleaseError as e:
@@ -90,8 +91,8 @@ proc release* (args: Arguments, opts: Options) =
         token,
         file,
         description,
-        getOptionValue(opts, "T", "targetCommit"),
-        getOptionValue(opts, "D", "draft", bool),
+        getOptionValue(opts, "T", "target-commit"),
+        getOptionValue(opts, "N", "draft", bool),
         getOptionValue(opts, "p", "prerelease", bool)
       )
     except GitHubReleaseError as e:
