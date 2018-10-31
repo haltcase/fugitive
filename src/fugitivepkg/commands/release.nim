@@ -45,7 +45,8 @@ const
   """
 
 proc getRepo (opts: Options, repo: var Option[string]): bool =
-  repo = getOptionValue(opts, "r", "repo").resolveRepoUrl("`release` shorthand")
+  repo = getOptionValue(opts, "r", "repo")
+    .resolveRepoUrl("`release` shorthand", baseApi & "repos/")
   result = repo.isSome
 
 proc release* (args: Arguments, opts: Options) =
@@ -54,8 +55,9 @@ proc release* (args: Arguments, opts: Options) =
     quit 0
 
   var repo: Option[string]
-  if not isGitRepo() and not getRepo(opts, repo):
-    fail errNotRepo
+  if not getRepo(opts, repo):
+    repo = getRepoUrl().resolveRepoUrl("`release` command")
+    if repo.isNone: fail errNotRepo
 
   argCheck(args, 1, "Tag name must be provided - use `--tag:<tag>`.")
 

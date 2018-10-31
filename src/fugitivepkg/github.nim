@@ -31,8 +31,8 @@ type
   GitHubReleaseError* = object of Exception
 
 const
-  baseUrl = "https://github.com/"
-  baseApi = "https://api.github.com/"
+  baseUrl* = "https://github.com/"
+  baseApi* = "https://api.github.com/"
   timeFormat = initTimeFormat "yyyy-MM-dd'T'HH:mm:sszzz"
 
 proc getUserObject* (username: string): Future[Option[GitHubUser]] {.async.} =
@@ -77,10 +77,10 @@ proc resolveRepoUrl* (repo: string, failMsg = "this action", baseUrl = baseUrl):
 template parseReleaseResponse (body: string): Option[GitHubRelease] =
   some body.parseJson.to(GitHubRelease)
 
-template raiseReleaseError (body: string) =
+template raiseReleaseError (body: string, prefix = "Failed to create release: ") =
   raise newException(
     GitHubReleaseError,
-    "Failed to create release: " & parseJson(body)["message"].getStr
+    prefix & " " & (if body == "": body else: parseJson(body)["message"].getStr)
   )
 
 proc getReleaseByName* (repo, tag: string): Future[Option[GitHubRelease]] {.async.} =
@@ -91,8 +91,10 @@ proc getReleaseByName* (repo, tag: string): Future[Option[GitHubRelease]] {.asyn
   let url = &"{resolvedUrl.get}/releases/tags/{tag}"
   let res = await client.get(url)
 
+  if res.code == Http404: return
+
   if not res.code.is2xx:
-    raiseReleaseError("Failed to fetch release: " & await res.body)
+    raiseReleaseError("", "Failed to fetch release: " & await res.body)
 
   result = parseReleaseResponse(await res.body)
 
@@ -121,6 +123,8 @@ proc createRelease* (
   if not res.code.is2xx:
     raiseReleaseError(await res.body)
 
+  result = parseReleaseResponse(await res.body)
+
 template newReleaseHeaders (token, filename: string): HttpHeaders =
   newHttpHeaders({
     "Authorization": "token " & token,
@@ -140,6 +144,7 @@ proc uploadReleaseFile* (
 
   if release.isNone:
     raiseReleaseError(
+      "",
       "Failed to upload release asset; release doesn't exist or couldn't be created."
     )
 
@@ -152,6 +157,6 @@ proc uploadReleaseFile* (
   let res = await client.post(url, body = $filepath.readFile)
 
   if not res.code.is2xx:
-    raiseReleaseError("Failed to upload release asset: " & await res.body)
+    raiseReleaseError(await res.body, "Failed to upload release asset: ")
 
   result = some parseJson(await res.body).to(GitHubAsset)
