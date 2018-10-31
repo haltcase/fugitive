@@ -1,0 +1,52 @@
+os:
+  - linux
+  - osx
+  - windows
+
+language: c
+
+cache:
+  directories:
+    - "$HOME/.nimble"
+    - "$HOME/.choosenim"
+    - "$HOME/nim"
+
+branches:
+  except:
+    - gh-pages
+
+install:
+  - |
+    if [ $TRAVIS_OS_NAME != windows ]; then
+      export CHOOSENIM_CHOOSE_VERSION=stable
+      curl https://nim-lang.org/choosenim/init.sh -sSf | sh
+    fi
+  - |
+    if [ $TRAVIS_OS_NAME == windows ]; then
+      if [ ! -d directory ]; then
+        curl -sS https://nim-lang.org/download/nim-0.19.0_x64.zip > nim.zip
+        7z x nim.zip
+        mv nim-0.19.0 nim
+        mv nim $HOME/
+      fi
+
+      export PATH=$HOME/nim/bin:$PATH
+    fi
+  - export PATH=$HOME/.nimble/bin:$PATH
+  - nimble refresh -y
+
+script:
+  - nimble install -y
+  - nimble build_current
+
+after_script:
+  - fugitive --version
+
+deploy:
+  - provider: script
+    script: bash .travis_release
+    on:
+      tags: true
+
+notifications:
+  email: false
