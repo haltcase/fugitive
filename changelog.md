@@ -1,3 +1,17 @@
+<a name="v0.9.0"></a>
+### [`v0.9.0`](https://github.com/citycide/fugitive/compare/v0.8.0...v0.9.0) (2018-10-31)
+
+
+###### FEATURES
+
+* **changelog:** support creating changelog between 2 tags ([`a40aaf3`](https://github.com/citycide/fugitive/commit/a40aaf3204a8a6227dffd6da9fef1d8ec433f799))
+
+###### BUG FIXES
+
+* **github:** use token more to avoid some API rate limits ([`ca44459`](https://github.com/citycide/fugitive/commit/ca444593bf54a954a2da444699eb35e63354f3f1))
+
+---
+
 <a name="v0.8.0"></a>
 ### [`v0.8.0`](https://github.com/citycide/fugitive/compare/v0.7.2...v0.8.0) (2018-10-31)
 
