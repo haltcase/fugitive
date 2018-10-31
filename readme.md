@@ -43,7 +43,8 @@ Commands:
                                  List, add, or remove git aliases
   config    [key] [value] [--remove|-r]
                                  Set, update, or remove fugitive settings
-  changelog [file] [--tag|-t:<tag>] [--overwrite|-o] [--no-anchor] [--init]
+  changelog [file] [--tag|-t:<tag>] [--overwrite|-o] [--no-anchor] [--no-title]
+            [--no-divider] [--init]
                                  Write changes since last tag to file or stdout
   clone     <...repos>           Alias for `fugitive mirror`
   install   [--override|-o] [--force|-y]

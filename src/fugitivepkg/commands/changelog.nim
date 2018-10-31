@@ -290,15 +290,17 @@ proc updateChangelog (
     let anchor = if newTag != "": newTag else: date
     file.output &"<a name=\"{anchor}\"></a>\n"
 
-  if not getOptionValue(opts, "", "no-title", bool):
+  let hasTitle = not getOptionValue(opts, "", "no-title", bool)
+  if hasTitle:
     let title = getTitle(newTag, lastTag, repoUrl, date)
     file.output title
 
   var headings: seq[string] = @[]
-  for commit in commitList:
+  for i, commit in commitList:
     if commit.header.kind notin headings:
       headings.add commit.header.kind
-      file.output &"\n###### {commitKinds[commit.header.kind].heading}\n\n"
+      let lead = if hasTitle or i > 0: "\n" else: ""
+      file.output &"{lead}###### {commitKinds[commit.header.kind].heading}\n\n"
 
     file.output commit.render(repoUrl) & "\n"
 
