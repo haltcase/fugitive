@@ -194,11 +194,6 @@ proc getLastTag (): tuple[lastTag, rev: string] =
   let lastTag = lastTagRaw.strip
   result = if code != 0: (lastTag, "") else: (lastTag, lastTag & "..HEAD")
 
-proc getNewTag (opts: Options): string =
-  if "tag" in opts: opts["tag"].strip
-  elif "t" in opts: opts["t"].strip
-  else: ""
-
 proc getTitle (newTag, lastTag, repoUrl: string, date = getDateStr()): string =
   result = "### "
   if newTag != "":
@@ -282,7 +277,7 @@ proc updateChangelog (
   date = getDateStr()
 ) =
   let
-    newTag = if nextTag != "": nextTag else: opts.getNewTag
+    newTag = if nextTag != "": nextTag else: getOptionValue(opts, "t", "tag")
     repoUrl = getRepoUrl()
     (file, path, overwrite) = selectFile(args, opts)
 
