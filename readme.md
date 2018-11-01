@@ -17,20 +17,19 @@ readable than the often cryptic bash syntax.
 
 ## installation
 
-Linux x64 and Windows x64 prebuilt binaries are available from
-[releases](https://github.com/citycide/fugitive/releases). Download the release
-for your system and extract the binary within to somewhere in your `$PATH`.
+Linux, Windows, and macOS prebuilt binaries are available from [releases][releases].
+Download the file for your system from the latest release and extract the binary
+within to somewhere in your `$PATH`.
 
-> macOS builds aren't ready yet but are a future goal
-
-If you have [Nim][nim] and [Nimble][nimble] installed
+Alternatively if you have [Nim][nim] and [Nimble][nimble] installed
 ( and `~/.nimble/bin` is in your path ), you can also simply run:
 
 ```shell
 nimble install fugitive
 ```
 
-This will make `fugitive` available to you anywhere.
+This will make the latest version of `fugitive` available to you anywhere.
+Check out [Nimble][nimble] if you'd like to know more about package installation.
 
 ## usage
 
@@ -164,25 +163,17 @@ be attached to git, while `clone` is just an alias for convenience.
 To build fugitive from source you'll need to install [Nim][nim] and its package
 manager [Nimble][nimble].
 
-> Currently, building should work on most platforms. Cross-compilation
-(building for other platforms than the current one) is only tested on
-a unix system.
-
 1. Clone the repo: `git clone https://github.com/citycide/fugitive.git`
 2. Move into the newly cloned directory: `cd fugitive`
-3. Install dependencies: `nimble install`
-4. Compile for your platform: `nimble build` (development)
-5. Compile for other platforms: run `nimble tasks` for available commands
-6. Compile all release versions: `nimble build_releases`
-   - this will generate and package prebuilt binaries for all supported
-     cross-compile targets
+3. Compile a development build for your current platform: `nimble build`
+4. Compile a release build for your current platform: `nimble release`
 
 ## contributing
 
 This project is open to contributions of all kinds! Please check and search
-the [issues](https://github.com/citycide/fugitive/issues) if you encounter a
-problem before opening a new one. Pull requests for improvements are also
-welcome &mdash; see the steps above for [development](#building).
+the [issues][issues] if you encounter a problem before opening a new one.
+[Pull requests][prinfo] for improvements are also welcome &mdash; see the
+steps above for [development](#building).
 
 ## license
 
@@ -192,6 +183,9 @@ MIT © [Bo Lingen / citycide](https://github.com/citycide)
 [gittown]: https://github.com/Originate/git-town
 [nim]: https://nim-lang.org
 [nimble]: https://github.com/nim-lang/nimble
+[issues]: https://github.com/citycide/fugitive/issues
+[releases]: https://github.com/citycide/fugitive/releases
 [citycide]: https://github.com/citycide
 [cascade]: https://github.com/citycide/cascade
+[prinfo]: https://help.github.com/articles/creating-a-pull-request/
 [nimparsebool]: https://nim-lang.org/docs/strutils.html#parseBool%2Cstring
