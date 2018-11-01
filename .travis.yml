@@ -38,7 +38,7 @@ install:
 
 script:
   - nimble install -y
-  - nimble build_current
+  - nimble release
 
 after_script:
   - fugitive --version
