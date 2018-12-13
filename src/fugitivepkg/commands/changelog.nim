@@ -261,7 +261,6 @@ proc getTagList (): seq[tuple[tag, date: string]] =
 
   if code != 0:
     fail tags
-    quit 0
 
   result = tags.strip.splitLines.map(parseTagList)
   result.sort(sortTags)
