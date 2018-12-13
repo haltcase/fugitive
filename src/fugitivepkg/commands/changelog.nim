@@ -97,7 +97,7 @@ proc parseHeader (header: string): Header =
     if colon notin 0..commitKindWidest + 1:
       # colon expected directly after commit type but not found
       # the empty kind will prevent this commit from printing
-      return ("", "", "")
+      return
 
     result = (
       kind: header[0..<colon].strip,
@@ -107,7 +107,6 @@ proc parseHeader (header: string): Header =
 
 # parses a string of the form "Closes #1, #2, #3" into a list of issue numbers
 proc parseIssueList (closures: string): seq[int] =
-  result = @[]
   var i = 0
   while i < closures.len:
     inc(i, closures.skipUntil('#', i) + 1)
@@ -137,7 +136,6 @@ proc parseBody (body: string): tuple[body: string, closures: seq[int], breaking:
     result.closures = @[]
 
 proc parseCommitList (commitList: string): seq[Commit] =
-  result = @[]
   for commitRaw in commitList.split commitSeparator:
     if commitRaw.strip == "": continue
 
@@ -204,7 +202,7 @@ proc getTitle (newTag, lastTag, repoUrl: string, date = getDateStr()): string =
   result &= "\n\n"
 
 proc renderClosures (closures: seq[int], repoUrl: string): string =
-  if closures.len == 0: return ""
+  if closures.len == 0: return
 
   result = ", closes " & closures
     .mapIt(&"[#{it}]({repoUrl}/issues/{it})")
@@ -290,7 +288,7 @@ proc updateChangelog (
     let title = getTitle(newTag, lastTag, repoUrl, date)
     file.output title
 
-  var headings: seq[string] = @[]
+  var headings: seq[string]
   for i, commit in commitList:
     if commit.header.kind notin headings:
       headings.add commit.header.kind

@@ -31,7 +31,6 @@ proc columnize* (
   if dist[^1].len < dist[0].len:
     dist[^1].add dist[^1][^1].len.spaces
 
-  result = ""
   for i, val in dist[0]:
     var row = val
     for col in dist[1..^1]:

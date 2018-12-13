@@ -75,7 +75,6 @@ proc removeAlias* (name: string): CmdExResult =
   result = execCmdEx cmdRemoveAlias % [name]
 
 proc buildRows (pairs: seq[AliasPair], longest: Longest): seq[string] =
-  result = @[]
   for pair in pairs:
     let (name, expansion) = pair
     let spacer = 1.spaces & repeat('.', 6) & 1.spaces

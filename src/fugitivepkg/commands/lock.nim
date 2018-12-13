@@ -27,7 +27,7 @@ proc lock* (args: Arguments, opts: Options) =
     fail "File name(s) must be provided."
 
   var good = 0
-  var untracked: seq[string] = @[]
+  var untracked: seq[string]
   for arg in args:
     let (_, code) = execCmdEx cmdLockFile % arg
     if code == 0: good.inc

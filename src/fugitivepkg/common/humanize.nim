@@ -11,7 +11,6 @@ const
   unitLabels = ["y", "d", "h", "m", "s", "ms"]
 
 proc parseToUnits (duration: float): seq[string] =
-  result = @[]
   var remainder = (duration * 1000).round.int
   for i, unit in unitValues:
     let count = remainder div unit

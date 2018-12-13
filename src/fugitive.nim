@@ -26,7 +26,7 @@ proc showHelp () =
   echo helpTemplate % args
 
 proc parseInput (): Input =
-  var args: seq[string] = @[]
+  var args: seq[string]
   var opts = initTable[string, string]()
   var idx = -1
   for kind, key, val in getopt():
