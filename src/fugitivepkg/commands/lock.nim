@@ -23,8 +23,7 @@ proc lock* (args: Arguments, opts: Options) =
   if not isGitRepo():
     fail errNotRepo
 
-  if args.len < 1:
-    fail "File name(s) must be provided."
+  argCheck(args, 1, "File name(s) must be provided.")
 
   var good = 0
   var untracked: seq[string]
