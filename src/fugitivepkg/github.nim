@@ -28,7 +28,7 @@ type
     url*, browser_download_url*: string
     created_at*, updated_at*: string
 
-  GitHubReleaseError* = object of Exception
+  GitHubReleaseError* = object of CatchableError
 
 const
   baseUrl* = "https://github.com/"
