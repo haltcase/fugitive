@@ -1,4 +1,6 @@
 import asyncdispatch, options, os, osproc, parseopt, strformat, strutils, tables
+import gara
+import unpack except unpack
 
 import fugitivepkg/[constants, github, types]
 import fugitivepkg/common/[cli, configfile]
@@ -59,11 +61,10 @@ proc ageCmd (args: Arguments, opts: Options) =
     quit 0
 
   argCheck(args, 1, errNoName)
-  let age = waitFor args[0].getUserAge
-  if age.isSome:
-    print &"{args[0]} profile age: {age.get}"
-  else:
-    fail &"Could not retrieve profile age for '{args[0]}', does this user exist?"
+
+  match waitFor args[0].getUserAge:
+    Some(@n): print &"{args[0]} profile age: {n}"
+    _: fail &"Could not retrieve profile age for '{args[0]}', does this user exist?"
 
 proc reposCmd (args: Arguments, opts: Options) =
   if "help" in opts:
@@ -75,46 +76,66 @@ proc reposCmd (args: Arguments, opts: Options) =
     quit 0
 
   argCheck(args, 1, errNoName)
-  let count = waitFor args[0].getRepoCount
-  if count.isSome:
-    print &"{args[0]} has {count.get} public repositories"
-  else:
-    fail &"Could not retrieve repo count for '{args[0]}', does this user exist?"
 
-proc main (command: string, args: Arguments, opts: Options): int =
-  case command
-  of "age": ageCmd(args, opts)
-  of "alias": alias(args, opts)
-  of "changelog": changelog(args, opts)
-  of "config": config(args, opts)
-  of "install": install(args, opts)
-  of "lock": lock(args, opts)
-  of "mirror", "clone": mirror(args, opts)
-  of "open": open(args, opts)
-  of "release": release(args, opts)
-  of "repos": reposCmd(args, opts)
-  of "scrap": scrap(args, opts)
-  of "summary": summary(args, opts)
-  of "undo": undo(args, opts)
-  of "uninstall": uninstall(args, opts)
-  of "unlock": unlock(args, opts)
-  of "unstage": unstage(args, opts)
-  else: fail &"unknown command '{command}'"
+  match waitFor args[0].getRepoCount:
+    Some(@n): print &"{args[0]} has {n} public repositories"
+    _: fail &"Could not retrieve repo count for '{args[0]}', does this user exist?"
+
+proc main (command: Command, args: Arguments, opts: Options): int =
+  match command:
+    Command.Age: ageCmd(args, opts)
+    Command.Alias: alias(args, opts)
+    Command.Changelog: changelog(args, opts)
+    Command.Config: config(args, opts)
+    Command.Install: install(args, opts)
+    Command.Lock: lock(args, opts)
+    Command.Mirror: mirror(args, opts)
+    Command.Open: open(args, opts)
+    Command.Release: release(args, opts)
+    Command.Repos: reposCmd(args, opts)
+    Command.Scrap: scrap(args, opts)
+    Command.Summary: summary(args, opts)
+    Command.Undo: undo(args, opts)
+    Command.Uninstall: uninstall(args, opts)
+    Command.Unlock: unlock(args, opts)
+    Command.Unstage: unstage(args, opts)
+    _: fail &"unknown command '{command}'"
 
   result = 0
 
+proc parseCommand (str: string): Command =
+  result = match str:
+    "age": Age
+    "alias": Alias
+    "changelog": Changelog
+    "config": Config
+    "install": Install
+    "lock": Lock
+    "mirror" or "clone": Mirror
+    "open": Open
+    "release": Release
+    "repos": Repos
+    "scrap": Scrap
+    "summary": Summary
+    "undo": Undo
+    "uninstall": Uninstall
+    "unlock": Unlock
+    "unstage": Unstage
+    _: fail &"unknown command '{str}'"
+
 when isMainModule:
-  let (args, opts) = parseInput()
+  [args, opts] <- parseInput()
   if args.len == 0 and opts.len == 0:
     showHelp()
     quit 0
 
   # check whether git is accessible
-  let (res, code) = execCmdEx "git --version"
+  [res, code] <- execCmdEx "git --version"
   if code != 0 or res.strip == "":
     fail """
     git doesn't seem to be installed. Please install it or
     ensure that it has been added to your PATH.
     """.strip
 
-  quit main(args[0], args[1..^1], opts)
+  let cmd = args[0].parseCommand
+  quit main(cmd, args[1..^1], opts)

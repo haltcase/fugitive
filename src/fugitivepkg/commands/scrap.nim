@@ -1,6 +1,7 @@
 include ../base
 
 from sequtils import mapIt
+import gara
 
 const
   usageMessage = """
@@ -25,18 +26,13 @@ proc scrap* (args: Arguments, opts: Options) =
   if not isGitRepo(): fail errNotRepo
 
   if getOptionValue(opts, "a", "all", bool):
-    let (res, code) = execCmdEx "git reset --hard"
-    if code == 0:
-      print "All local changes discarded"
-      quit 0
-    else:
-      fail res
+    match execCmdEx "git reset --hard":
+      (_, 0): print "All local changes discarded"
+      (@res, _): fail res
+    quit 0
 
   argCheck(args, 1, "File names required.")
 
-  let (res, code) = execCmdEx "git checkout -- " & args.mapIt(&"'{it}'").join(" ")
-  if code == 0:
-    print "Local changes to files discarded"
-    quit 0
-  else:
-    fail res
+  match execCmdEx "git checkout -- " & args.mapIt(&"'{it}'").join(" "):
+    (_, 0): print "Local changes to files discarded"
+    (@res, _): fail res

@@ -1,5 +1,7 @@
 include ../base
 
+import gara
+
 const
   cmdUnlockFile = "git update-index --no-skip-worktree "
   usageMessage = """
@@ -19,7 +21,6 @@ proc unlock* (args: Arguments, opts: Options) =
 
   argCheck(args, 1, "File name(s) must be provided.")
 
-  let (res, code) = execCmdEx cmdUnlockFile & args.join(" ")
-  if code != 0: fail res.strip
-
-  print "File(s) unlocked."
+  match execCmdEx cmdUnlockFile & args.join(" "):
+    (_, 0): print "File(s) unlocked."
+    (@res, _): fail res.strip

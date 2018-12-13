@@ -1,6 +1,7 @@
 include ../base
 
 import os, sequtils, times
+import gara
 
 const
   cmdGetAge = """
@@ -39,10 +40,11 @@ proc getActiveDays (): string =
   if res.endsWith("does not have any commits yet\n"):
     return "0 days"
 
-  let created = getRepoAge(true).extractDate
-  let parsed = created.parse "yyyy-MM-dd"
-  let diff = epochTime() - parsed.toTime.toUnix.float
-  let totalDays = diff / 86400
+  let
+    created = getRepoAge(true).extractDate
+    parsed = created.parse "yyyy-MM-dd"
+    diff = epochTime() - parsed.toTime.toUnix.float
+    totalDays = diff / 86400
 
   let activeDays =
     res
@@ -54,17 +56,17 @@ proc getActiveDays (): string =
 
   let percentActive = activeDays / totalDays.int
   let percentString = percentActive.formatFloat(precision = 2)
-  result = $activeDays & " days (" & percentString & "%)"
+  result = &"{activeDays} days ({percentString}%)"
 
 proc getCommitCount (): string =
-  let (res, code) = execCmdEx "git rev-list HEAD --count"
-  if code != 0: return "0"
-  result = strip res
+  result = match execCmdEx "git rev-list HEAD --count":
+    (@res, 0): strip res
+    _: "0"
 
 proc getFileCount (): int =
-  let (res, code) = execCmdEx "git ls-files"
-  if code != 0: return 0
-  result = countLines res
+  result = match execCmdEx "git ls-files":
+    (@res, 0): countLines res
+    _: 0
 
 proc summary* (args: Arguments, opts: Options) =
   if getOptionValue(opts, "h", "help", bool):
@@ -73,10 +75,12 @@ proc summary* (args: Arguments, opts: Options) =
 
   if not isGitRepo(): fail errNotRepo
 
-  print "Project summary ->"
-  echo "  project   : " & getRepoName()
-  echo "  created   : " & getRepoAge()
-  echo "  active    : " & getActiveDays()
-  echo "  commits   : " & getCommitCount()
-  echo "  files     : " & $getFileCount()
-  echo ""
+  print strip(&"""
+  Project summary ->
+
+  project   : {getRepoName()}
+  created   : {getRepoAge()}
+  active    : {getActiveDays()}
+  commits   : {getCommitCount()}
+  files     : {getFileCount()}
+  """)

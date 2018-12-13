@@ -1,6 +1,7 @@
 include ../base
 
 import browsers, options
+import gara, unpack
 
 from ../github import resolveRepoURL
 
@@ -28,7 +29,7 @@ proc open* (args: Arguments, opts: Options) =
 
   if args.len < 1:
     if isGitRepo():
-      let (res, code) = execCmdEx "git remote -v"
+      [res, code] <- execCmdEx "git remote -v"
       if code == 0 and res != "":
         res
         .splitLines[0]
@@ -47,10 +48,10 @@ proc open* (args: Arguments, opts: Options) =
     openDefaultBrowser(url.get)
   else:
     if "Microsoft" in readFile("/proc/sys/kernel/osrelease"):
-      let (res, code) = execCmdEx "cmd.exe /c start \"\" " & url.get
+      [res, code] <- execCmdEx "cmd.exe /c start \"\" " & url.get
       if code != 0: fail res
       return
 
-    let (res, _) = execCmdEx "echo $DISPLAY"
+    [res] <- execCmdEx "echo $DISPLAY"
     if res.strip == "":
       fail "No display detected - cannot open repository"

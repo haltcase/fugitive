@@ -1,5 +1,7 @@
 include ../base
 
+import unpack
+
 const
   cmdLockFile = "git update-index --skip-worktree $1"
   usageMessage = """
@@ -28,17 +30,16 @@ proc lock* (args: Arguments, opts: Options) =
   var good = 0
   var untracked: seq[string]
   for arg in args:
-    let (_, code) = execCmdEx cmdLockFile % arg
-    if code == 0: good.inc
+    if (execCmdEx cmdLockFile % arg).exitCode == 0:
+      inc good
     else:
-      let (_, err) = execCmdEx "git ls-files --error-unmatch " & arg
-      if err == 1: untracked.add arg
+      { exitCode } <- execCmdEx "git ls-files --error-unmatch " & arg
+      if exitCode == 1: untracked.add arg
 
   if good > 0:
-    print "File(s) locked. (" & $good & " of " & $args.len & ")"
+    print &"File(s) locked. ({good} of {args.len})"
     if untracked.len > 0:
-      echo "Could not lock untracked files:\n\n  " &
-        untracked.join "\n  "
-      echo ""
+      let failures = untracked.join "\n  "
+      echo &"Could not lock untracked files:\n\n  {failures}\n"
   else:
     fail "Untracked files cannot be locked."

@@ -3,6 +3,8 @@ include ../base
 import options
 from os import existsDir
 
+import unpack
+
 from ../github import resolveRepoURL
 
 const
@@ -47,13 +49,12 @@ proc mirror* (args: Arguments, opts: Options) =
       if dirs.len >= i + 1 and dirs[i].len > 0: dirs[i]
       else: url.get.split('/')[^1]
 
-    if target.existsDir:
-      continue
+    if target.existsDir: continue
 
-    let (res, code) = execCmdEx(&"git clone {url.get} {target}")
+    [res, code] <- execCmdEx(&"git clone {url.get} {target}")
     if code != 0:
       fail &"Failed to clone into '{target}'\n{res.strip.indent(2)}"
     else:
-      good += 1
+      inc good
 
   print &"Clone complete ({good} of {args.len})"

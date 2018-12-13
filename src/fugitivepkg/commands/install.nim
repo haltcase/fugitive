@@ -1,5 +1,7 @@
 include ../base
 
+import unpack
+
 from ./alias import createAlias
 
 const
@@ -58,17 +60,16 @@ proc install* (args: Arguments, opts: Options) =
 
   for command in commandsToAlias:
     let value = "!fugitive " & command
-    let (existing, _) = execCmdEx "git config --global alias." & command
-    let stripped = existing.strip
-    if stripped == value:
+    [res] <- execCmdEx "git config --global alias." & command
+    let existing = res.strip
+    if existing == value:
       # this alias has already been set
       continue
-    elif stripped != "" and not shouldOverwrite:
+    elif existing != "" and not shouldOverwrite:
       # user hasn't allowed overriding existing aliases
       continue
 
-    let (_, code) = createAlias(command, value)
-    if code != 0:
-      failSoft "Could not set alias for '" & command & "'"
+    if createAlias(command, value).exitCode != 0:
+      failSoft &"Could not set alias for '{command}'"
 
   print "Aliases installed. Use `fugitive uninstall` to remove them."

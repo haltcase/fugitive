@@ -7,7 +7,7 @@ from parseutils import parseSaturatedNatural, skipUntil
 from sequtils import keepIf, map, mapIt, toSeq
 from times import getDateStr
 
-import tempfile
+import gara, unpack, tempfile
 
 type
   Header = tuple[kind: string, scope: string, desc: string]
@@ -182,13 +182,13 @@ proc selectFile (args: Arguments, opts: Options): tuple[fd: File, name: string, 
     if "init" notin opts and getOptionValue(opts, "o", "overwrite", bool):
       result = (args[0].open(fmWrite), args[0], true)
     else:
-      let (fd, name) = mkstemp(mode = fmWrite)
+      [fd, name] <- mkstemp(mode = fmWrite)
       result = (fd, name, false)
   else:
     result = (stdout, "", false)
 
 proc getLastTag (): tuple[lastTag, rev: string] =
-  let (lastTagRaw, code) = execCmdEx cmdGetLastTag
+  [lastTagRaw, code] <- execCmdEx cmdGetLastTag
   let lastTag = lastTagRaw.strip
   result = if code != 0: (lastTag, "") else: (lastTag, lastTag & "..HEAD")
 
@@ -236,7 +236,7 @@ proc render (commit: Commit, repoUrl: string): string =
   result &= &" ([`{shortHash}`]({repoUrl}/commit/{commit.hash})){closures}"
 
 proc getCommitList (lastTag, rev: string, failFast = false, verbose = true): seq[Commit] =
-  let (commits, code) = execCmdEx cmdGetCommits & rev
+  [commits, code] <- execCmdEx cmdGetCommits & rev
 
   if code != 0:
     if verbose:
@@ -253,11 +253,11 @@ proc getCommitList (lastTag, rev: string, failFast = false, verbose = true): seq
     if failFast: quit 0
 
 proc parseTagList (tagInfo: string): tuple[tag, date: string] =
-  let tagInfoList = tagInfo.split(itemSeparator)
-  result = (tagInfoList[0], tagInfoList[1])
+  [tag, date] <- tagInfo.split(itemSeparator)
+  result = (tag, date)
 
 proc getTagList (): seq[tuple[tag, date: string]] =
-  let (tags, code) = execCmdEx cmdGetAllTags
+  [tags, code] <- execCmdEx cmdGetAllTags
 
   if code != 0:
     fail tags

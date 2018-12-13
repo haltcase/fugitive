@@ -1,5 +1,7 @@
 include ../base
 
+import gara, unpack
+
 const
   usageMessage = """
   Usage: fugitive config [key] [value] [--remove|-r]
@@ -24,12 +26,10 @@ const
   }.toTable
 
 proc parseKey (key: string): tuple[section, key: string] =
-  let keys = key.split('.', 1)
-
-  case keys.len
-  of 1: return ("user", keys[0].strip)
-  of 2: return (keys[0].strip, keys[1].strip)
-  else: discard
+  result = match key.split('.', 1):
+    @[@section, @field]: (section.strip, field.strip)
+    @[@field]: ("user", field.strip)
+    _: ("", "")
 
 proc config* (args: Arguments, opts: Options) =
   if "help" in opts:
@@ -40,7 +40,7 @@ proc config* (args: Arguments, opts: Options) =
     echo configFilePath
     quit 0
 
-  let (section, key) = args[0].parseKey
+  [section, key] <- args[0].parseKey
 
   if key == "":
     fail "Invalid key"

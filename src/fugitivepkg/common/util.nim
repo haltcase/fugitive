@@ -1,6 +1,8 @@
-import options, strutils
+import options, strformat, strutils
 from os import getCurrentDir, existsDir, splitFile
 from osproc import execCmdEx
+
+import unpack
 
 proc removeSuffix* (str, suffix: string): string =
   if str.endsWith(suffix): str[0..str.high - suffix.len]
@@ -8,24 +10,24 @@ proc removeSuffix* (str, suffix: string): string =
 
 proc isGitRepo* (): bool =
   if not existsDir ".git": return false
-  let (res, _) = execCmdEx "git rev-parse --git-dir"
+  [res] <- execCmdEx "git rev-parse --git-dir"
   result = not res.startsWith "fatal: Not a git repository"
 
 proc normalizeGitUrl* (url: string): string =
   if url.startsWith("git@"):
-    let parts = url.split({'@', ':'})
-    return "https://" & parts[1] & "/" & parts[2]
+    [_, base, user] <- url.split({'@', ':'})
+    result = &"https://{base}/{user}"
   else:
-    return url
+    result = url
 
 proc getRepoUrl* (): string =
-  let (res, code) = execCmdEx "git ls-remote --get-url origin"
+  [res, code] <- execCmdEx "git ls-remote --get-url origin"
   if code != 0 or res == "": return ""
 
   result = res.strip.removeSuffix(".git").normalizeGitUrl
 
 proc getRepoName* (): string =
-  let (res, code) = execCmdEx "git ls-remote --get-url origin"
+  [res, code] <- execCmdEx "git ls-remote --get-url origin"
 
   if code == 0 and res != "":
     let line = res.strip
@@ -33,10 +35,9 @@ proc getRepoName* (): string =
     let finish = line.find(".git")
     result = line[start + 1..finish - 1]
   else:
-    let (_, name, _) = splitFile getCurrentDir()
-    result = name
+    result = getCurrentDir().splitFile.name
 
 proc getGitUsername* (): Option[string] =
-  let (res, code) = execCmdEx "git config --global user.name"
+  [res, code] <- execCmdEx "git config --global user.name"
   if code != 0 or res == "": return
   result = some res.strip

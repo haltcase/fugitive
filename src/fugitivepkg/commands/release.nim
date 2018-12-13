@@ -1,6 +1,7 @@
 include ../base
 
 import asyncDispatch, options, os
+import gara
 
 import ../github
 
@@ -73,8 +74,9 @@ proc release* (args: Arguments, opts: Options) =
     else: getOptionValue(opts, "d", "description")
 
   if file == "":
+    var releaseOption: Option[GitHubRelease]
     try:
-      let releaseOption = waitFor createRelease(
+      releaseOption = waitFor createRelease(
         repo.get,
         args[0],
         token,
@@ -83,17 +85,17 @@ proc release* (args: Arguments, opts: Options) =
         getOptionValue(opts, "N", "draft", bool),
         getOptionValue(opts, "p", "prerelease", bool)
       )
-
-      if releaseOption.isSome:
-        print "Release created at: " & releaseOption.get.htmlUrl
-      else:
-        # TODO: make sure this can't happen?
-        fail "Couldn't create release for an unknown reason."
     except GitHubReleaseError as e:
       fail e.msg
+
+    match releaseOption:
+      Some(@release): print "Release created at: " & release.htmlUrl
+      # TODO: make sure this can't happen?
+      _: fail "Couldn't create release for an unknown reason."
   else:
+    var uploadedFile: Option[GitHubAsset]
     try:
-      let uploadedFile = waitFor uploadReleaseFile(
+      uploadedFile = waitFor uploadReleaseFile(
         repo.get,
         args[0],
         token,
@@ -103,11 +105,10 @@ proc release* (args: Arguments, opts: Options) =
         getOptionValue(opts, "N", "draft", bool),
         getOptionValue(opts, "p", "prerelease", bool)
       )
-
-      if uploadedFile.isSome:
-        print "Release created at: " & uploadedFile.get.browserDownloadUrl
-      else:
-        # TODO: make sure this can't happen?
-        fail "Couldn't upload file for an unknown reason."
     except GitHubReleaseError as e:
       fail e.msg
+
+    match uploadedFile:
+      Some(@file): print "Release created at: " & file.browserDownloadUrl
+      # TODO: make sure this can't happen?
+      _: fail "Couldn't upload file for an unknown reason."

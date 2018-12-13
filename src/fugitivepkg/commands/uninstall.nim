@@ -1,5 +1,7 @@
 include ../base
 
+import unpack
+
 from ./alias import removeAlias
 from ./install import commandsToAlias
 
@@ -25,11 +27,10 @@ proc uninstall* (args: Arguments, opts: Options) =
 
   for command in commandsToAlias:
     let value = "!fugitive " & command
-    let (existing, _) = execCmdEx "git config --global alias." & command
-    let stripped = existing.strip
-    if stripped == value:
-      let (_, code) = command.removeAlias
-      if code != 0:
+    [existing] <- execCmdEx "git config --global alias." & command
+
+    if existing.strip == value:
+      if command.removeAlias.exitCode != 0:
         failSoft &"Could not remove alias for '{command}'"
     else:
       continue

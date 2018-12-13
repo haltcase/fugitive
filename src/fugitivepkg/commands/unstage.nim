@@ -1,5 +1,7 @@
 include ../base
 
+import gara, unpack
+
 const
   usageMessage = """
   Usage: fugitive unstage <...files> [--all|-a]
@@ -22,36 +24,33 @@ proc unstage* (args: Arguments, opts: Options) =
   if not isGitRepo(): fail errNotRepo
 
   if getOptionValue(opts, "a", "all", bool):
-    let (res, code) = execCmdEx "git reset"
-    if code == 0:
+    if (execCmdEx "git reset").exitCode == 0:
       print "Files unstaged"
       quit 0
 
   argCheck(args, 1, "File names required")
 
-  let (res, code) = execCmdEx "git reset HEAD " & args.join(" ")
+  [res, code] <- execCmdEx "git reset HEAD " & args.join(" ")
 
   if code == 0:
     print "Files unstaged"
     quit 0
 
-  if res.startsWith "fatal: ambiguous argument 'HEAD'":
-    # we're probably in a new repo with no commits
-    # so thanks to git's highly unpredictable interface, we need
-    # to use a totally different command to remove staged files
-    # but unlike `git add`, `git rm` only accepts a single file
-    # at a time, so we'll have to run a separate command for each one
-    var good = 0
-    for arg in args:
-      let (res, code) = execCmdEx &"git rm --cached -r {arg}"
-      if code != 0:
-        failSoft &"Could not unstage '{arg}'\n{res.indent(2)}"
-      else:
-        inc good
-
-    if good == 0:
-      fail &"Failed to unstage {args.len} files"
-    else:
-      print &"Files unstaged ({good} of {args.len})"
-  else:
+  if not res.startsWith "fatal: ambiguous argument 'HEAD'":
     fail res
+
+  # we're probably in a new repo with no commits
+  # so thanks to git's highly unpredictable interface, we need
+  # to use a totally different command to remove staged files
+  # but unlike `git add`, `git rm` only accepts a single file
+  # at a time, so we'll have to run a separate command for each one
+  var good = 0
+  for arg in args:
+    match execCmdEx &"git rm --cached -r {arg}":
+      (_, 0): inc good
+      (@res, _): failSoft &"Could not unstage '{arg}'\n{res.indent(2)}"
+
+  if good == 0:
+    fail &"Failed to unstage {args.len} files"
+  else:
+    print &"Files unstaged ({good} of {args.len})"

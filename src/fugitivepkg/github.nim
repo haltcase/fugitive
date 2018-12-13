@@ -1,6 +1,8 @@
 import asyncdispatch, httpclient, json, options, strformat, strutils, sugar, tables, times
 from os import getEnv, extractFilename
 
+import gara, unpack
+
 import common/[cli, configfile, humanize, util]
 
 type
@@ -37,17 +39,17 @@ const
 
 proc getUserObject* (username: string): Future[Option[GitHubUser]] {.async.} =
   let client = newAsyncHttpClient()
-  let res = await client.get(&"{baseApi}users/{username}")
+  { body, code } <- await client.get(&"{baseApi}users/{username}")
 
-  if res.code == Http404:
-    return
+  if code == Http404: return
 
-  let body = parseJson await res.body
-  result = some body.to(GitHubUser)
+  let raw = parseJson await body
+  result = some raw.to(GitHubUser)
 
-proc getRepoCount* (username: string): Future[Option[int]] {.async.} =
-  result = (await username.getUserObject)
-    .map(user => user.publicRepos)
+proc getRepoCount* (username: string): Future[Option[int]] =
+  result = newFuture[Option[int]]("grc")
+  let obj = username.getUserObject.read
+  result.complete(some obj.get.publicRepos)
 
 proc getUserAge* (username: string): Future[Option[string]] {.async.} =
   result = (await username.getUserObject)
@@ -91,14 +93,14 @@ proc getReleaseByName* (repo, tag: string; token = ""): Future[Option[GitHubRele
   if token != "":
     client.headers = newHttpHeaders({ "Authorization": "token " & token })
   let url = &"{resolvedUrl.get}/releases/tags/{tag}"
-  let res = await client.get(url)
+  { body, code } <- await client.get(url)
 
-  if res.code == Http404: return
+  if code == Http404: return
 
-  if not res.code.is2xx:
-    raiseReleaseError("", "Failed to fetch release: " & await res.body)
+  if not code.is2xx:
+    raiseReleaseError("", "Failed to fetch release: " & await body)
 
-  result = parseReleaseResponse(await res.body)
+  result = parseReleaseResponse(await body)
 
 proc createRelease* (
   repo, tag, token: string;
@@ -113,7 +115,7 @@ proc createRelease* (
 
   let client = newAsyncHttpClient()
   client.headers = newHttpHeaders({ "Authorization": "token " & token })
-  let res = await client.post(resolvedUrl.get & "/releases", body = $(%*{
+  { body, code } <- await client.post(resolvedUrl.get & "/releases", body = $(%*{
     "name": tag,
     "tag_name": tag,
     "body": description,
@@ -122,10 +124,10 @@ proc createRelease* (
     "prerelease": prerelease
   }))
 
-  if not res.code.is2xx:
-    raiseReleaseError(await res.body)
+  if not code.is2xx:
+    raiseReleaseError(await body)
 
-  result = parseReleaseResponse(await res.body)
+  result = parseReleaseResponse(await body)
 
 template newReleaseHeaders (token, filename: string): HttpHeaders =
   newHttpHeaders({
@@ -156,9 +158,9 @@ proc uploadReleaseFile* (
     client = newAsyncHttpClient()
 
   client.headers = newReleaseHeaders(token, filename)
-  let res = await client.post(url, body = $filepath.readFile)
+  { body, code } <- await client.post(url, body = $filepath.readFile)
 
-  if not res.code.is2xx:
-    raiseReleaseError(await res.body, "Failed to upload release asset: ")
+  if not code.is2xx:
+    raiseReleaseError(await body, "Failed to upload release asset: ")
 
-  result = some parseJson(await res.body).to(GitHubAsset)
+  result = some parseJson(await body).to(GitHubAsset)
