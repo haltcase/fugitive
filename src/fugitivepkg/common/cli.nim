@@ -24,7 +24,7 @@ proc print* (msg: string) =
   printImpl("\n✓ ", msg, fgGreen)
   echo "\n"
 
-proc fail* (msg: string) =
+proc fail* (msg: string) {.noReturn.} =
   ## Print a failure message with red text, then quit with error code 1.
   printImpl("\n✗ ", msg, fgRed)
   echo "\n"
