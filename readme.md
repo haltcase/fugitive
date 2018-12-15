@@ -37,25 +37,24 @@ Check out [Nimble][nimble] if you'd like to know more about package installation
 Usage: fugitive [command] [...args] (...options)
 
 Commands:
-  age       <username>           Display the age of the profile for <username>
   alias     [name [--remove|-r]] [expansion]
                                  List, add, or remove git aliases
   config    [key] [value] [--remove|-r]
                                  Set, update, or remove fugitive settings
   changelog [file] [--tag|-t:<tag>] [--last-tag|-l:<tag>] [--overwrite|-o]
             [--no-anchor] [--no-title] [--no-divider] [--init]
-                                 Write changes since last tag to file or stdout
+                                 Write a list of changes since last tag or between two tags
   clone     <...repos>           Alias for `fugitive mirror`
   install   [--override|-o] [--force|-y]
                                  Alias various fugitive commands as git subcommands
   lock      <...files>           Prevent changes to the specified files from being tracked
   mirror    <...repos>           Wrapper around `git clone` with various URL shorthands
   open      [repo]               Open the current or specified repository's homepage
+  profile   [username]           View a summary of a GitHub user profile
   release   <tag> [--repo|-r:<repo>] [--file|-f:<filepath>] [--description|-d:<desc>]
             [--desc-file|-D:<filepath>] [--draft|-N] [--prerelease|-p]
             [--target-commit|-T:<commitish>]
                                  Create a GitHub release and/or upload assets to a release
-  repos     <username>           Display the number of public repos for <username>
   scrap     <...files>  [--all|-a]
                                  Discard local changes to the specified files
   summary                        Summarize git repository statistics
@@ -138,6 +137,7 @@ changelog
 lock
 mirror
 open
+profile
 release
 scrap
 summary

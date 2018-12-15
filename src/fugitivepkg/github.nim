@@ -1,9 +1,9 @@
-import asyncdispatch, httpclient, json, options, strformat, strutils, sugar, tables, times
+import asyncdispatch, httpclient, json, options, strformat, strutils, sugar, tables
 from os import getEnv, extractFilename
 
 import gara, unpack
 
-import common/[cli, configfile, humanize, util]
+import common/[cli, configfile, util]
 
 type
   GitHubUser* = object
@@ -35,7 +35,6 @@ type
 const
   baseUrl* = "https://github.com/"
   baseApi* = "https://api.github.com/"
-  timeFormat = initTimeFormat "yyyy-MM-dd'T'HH:mm:sszzz"
 
 proc getUserObject* (username: string): Future[Option[GitHubUser]] {.async.} =
   let client = newAsyncHttpClient()
@@ -45,17 +44,6 @@ proc getUserObject* (username: string): Future[Option[GitHubUser]] {.async.} =
 
   let raw = parseJson await body
   result = some raw.to(GitHubUser)
-
-proc getRepoCount* (username: string): Future[Option[int]] =
-  result = newFuture[Option[int]]("grc")
-  let obj = username.getUserObject.read
-  result.complete(some obj.get.publicRepos)
-
-proc getUserAge* (username: string): Future[Option[string]] {.async.} =
-  result = (await username.getUserObject)
-    .map(user => user.createdAt.parse(timeFormat))
-    .map(created => epochTime() - created.toTime.toUnix.float)
-    .map(diff => humanize diff)
 
 proc resolveRepoUrl* (repo: string, failMsg = "this action", baseUrl = baseUrl): Option[string] =
   case repo.count '/'

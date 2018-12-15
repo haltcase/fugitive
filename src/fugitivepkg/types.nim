@@ -2,7 +2,6 @@ from tables import Table
 
 type
   Command* {.pure.} = enum
-    Age
     Alias
     Changelog
     Config
@@ -10,8 +9,8 @@ type
     Lock
     Mirror
     Open
+    Profile
     Release
-    Repos
     Scrap
     Summary
     Undo

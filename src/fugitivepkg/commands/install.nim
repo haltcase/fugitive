@@ -28,6 +28,7 @@ const
     "lock",
     "mirror",
     "open",
+    "profile",
     "release",
     "scrap",
     "summary",

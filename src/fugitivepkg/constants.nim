@@ -29,7 +29,6 @@ const
   $2: $1 [command] [...args] [...options]
 
   $3:
-    age       <username>           Display the age of the profile for <username>
     alias     [name [--remove|-r]] [expansion]
                                    List, add, or remove git aliases
     config    [key] [value] [--remove|-r]
@@ -43,11 +42,11 @@ const
     lock      <...files>           Prevent changes to the specified files from being tracked
     mirror    <...repos>           Wrapper around `git clone` with various URL shorthands
     open      [repo]               Open the current or specified repository's homepage
+    profile   [username]           View a summary of a GitHub user profile
     release   <tag> [--repo|-r:<repo>] [--file|-f:<filepath>] [--description|-d:<desc>]
               [--desc-file|-D:<filepath>] [--draft|-N] [--prerelease|-p]
               [--target-commit|-T:<commitish>]
                                    Create a GitHub release and/or upload assets to a release
-    repos     <username>           Display the number of public repos for <username>
     scrap     <...files>  [--all|-a]
                                    Discard local changes to the specified files
     summary                        Summarize git repository statistics

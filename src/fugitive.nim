@@ -1,6 +1,5 @@
 import asyncdispatch, options, os, osproc, parseopt, strformat, strutils, tables
-import gara
-import unpack except unpack
+import gara, unpack
 
 import fugitivepkg/[constants, github, types]
 import fugitivepkg/common/[cli, configfile]
@@ -12,6 +11,7 @@ import fugitivepkg/commands/[
   lock,
   mirror,
   open,
+  profile,
   release,
   scrap,
   summary,
@@ -51,39 +51,8 @@ proc parseInput (): Input =
 
   result = (args, opts)
 
-proc ageCmd (args: Arguments, opts: Options) =
-  if "help" in opts:
-    echo "\n" & """
-    Usage: fugitive age <username>
-
-    Display the GitHub profile age for the given <username>.
-    """
-    quit 0
-
-  argCheck(args, 1, errNoName)
-
-  match waitFor args[0].getUserAge:
-    Some(@n): print &"{args[0]} profile age: {n}"
-    _: fail &"Could not retrieve profile age for '{args[0]}', does this user exist?"
-
-proc reposCmd (args: Arguments, opts: Options) =
-  if "help" in opts:
-    echo "\n" & """
-    Usage: fugitive repos <username>
-
-    Display the number of public GitHub repos for <username>.
-    """
-    quit 0
-
-  argCheck(args, 1, errNoName)
-
-  match waitFor args[0].getRepoCount:
-    Some(@n): print &"{args[0]} has {n} public repositories"
-    _: fail &"Could not retrieve repo count for '{args[0]}', does this user exist?"
-
 proc main (command: Command, args: Arguments, opts: Options): int =
   match command:
-    Command.Age: ageCmd(args, opts)
     Command.Alias: alias(args, opts)
     Command.Changelog: changelog(args, opts)
     Command.Config: config(args, opts)
@@ -91,8 +60,8 @@ proc main (command: Command, args: Arguments, opts: Options): int =
     Command.Lock: lock(args, opts)
     Command.Mirror: mirror(args, opts)
     Command.Open: open(args, opts)
+    Command.Profile: profile(args, opts)
     Command.Release: release(args, opts)
-    Command.Repos: reposCmd(args, opts)
     Command.Scrap: scrap(args, opts)
     Command.Summary: summary(args, opts)
     Command.Undo: undo(args, opts)
@@ -105,7 +74,6 @@ proc main (command: Command, args: Arguments, opts: Options): int =
 
 proc parseCommand (str: string): Command =
   result = match str:
-    "age": Age
     "alias": Alias
     "changelog": Changelog
     "config": Config
@@ -113,8 +81,8 @@ proc parseCommand (str: string): Command =
     "lock": Lock
     "mirror" or "clone": Mirror
     "open": Open
+    "profile": Profile
     "release": Release
-    "repos": Repos
     "scrap": Scrap
     "summary": Summary
     "undo": Undo
