@@ -1,7 +1,5 @@
 include ../base
 
-import gara, unpack
-
 const
   usageMessage = """
   Usage: fugitive config [key] [value] [--remove|-r]

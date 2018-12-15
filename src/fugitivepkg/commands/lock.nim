@@ -1,7 +1,5 @@
 include ../base
 
-import unpack
-
 const
   cmdLockFile = "git update-index --skip-worktree $1"
   usageMessage = """

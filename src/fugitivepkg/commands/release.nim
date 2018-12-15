@@ -1,7 +1,6 @@
 include ../base
 
-import asyncDispatch, options, os
-import gara
+import asyncDispatch, os
 
 import ../github
 

@@ -1,7 +1,5 @@
 include ../base
 
-import unpack
-
 from ./alias import removeAlias
 from ./install import commandsToAlias
 

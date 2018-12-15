@@ -1,7 +1,6 @@
 include ../base
 
-import browsers, options
-import gara, unpack
+import browsers
 
 from ../github import resolveRepoURL
 

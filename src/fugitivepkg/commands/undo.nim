@@ -1,5 +1,4 @@
 include ../base
-import gara
 
 const
   usageMessage = """

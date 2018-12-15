@@ -1,7 +1,6 @@
 include ../base
 
 import os, sequtils, times
-import gara
 
 const
   cmdGetAge = """

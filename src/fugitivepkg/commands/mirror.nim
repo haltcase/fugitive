@@ -1,9 +1,6 @@
 include ../base
 
-import options
 from os import existsDir
-
-import unpack
 
 from ../github import resolveRepoURL
 

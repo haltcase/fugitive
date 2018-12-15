@@ -1,7 +1,5 @@
 include ../base
 
-import gara, unpack
-
 const
   usageMessage = """
   Usage: fugitive unstage <...files> [--all|-a]

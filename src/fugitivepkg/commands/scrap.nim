@@ -1,7 +1,6 @@
 include ../base
 
 from sequtils import mapIt
-import gara
 
 const
   usageMessage = """

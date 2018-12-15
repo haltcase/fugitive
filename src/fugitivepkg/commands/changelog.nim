@@ -7,7 +7,7 @@ from parseutils import parseSaturatedNatural, skipUntil
 from sequtils import keepIf, map, mapIt, toSeq
 from times import getDateStr
 
-import gara, unpack, tempfile
+import tempfile
 
 type
   Header = tuple[kind: string, scope: string, desc: string]

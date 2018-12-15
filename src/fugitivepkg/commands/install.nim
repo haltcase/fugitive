@@ -1,7 +1,5 @@
 include ../base
 
-import unpack
-
 from ./alias import createAlias
 
 const

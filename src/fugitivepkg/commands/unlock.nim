@@ -1,7 +1,5 @@
 include ../base
 
-import gara
-
 const
   cmdUnlockFile = "git update-index --no-skip-worktree "
   usageMessage = """
