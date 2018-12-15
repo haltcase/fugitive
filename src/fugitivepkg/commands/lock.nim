@@ -12,7 +12,7 @@ const
   not be modified in source control, while still allowing you
   to modifying them locally.
 
-  Example:
+  Examples:
 
     fugitive lock fixtures/test.db
   """

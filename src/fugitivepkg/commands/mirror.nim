@@ -28,7 +28,7 @@ const
   repositories, multiple directories can be provided in a comma
   separated list (elements can be skipped).
 
-  Example:
+  Examples:
 
     fugitive mirror citycide/glob citycide/cascade citycide/fugitive -d:glob,,fugitive
   """

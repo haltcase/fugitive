@@ -9,7 +9,7 @@ const
   By default the changes in the commit are preserved but can be
   discarded by providing the --hard (-H) flag.
 
-  Example:
+  Examples:
 
     fugitive undo       # roll back the most recent commit
     fugitive undo 3     # roll back the 3 most recent commits

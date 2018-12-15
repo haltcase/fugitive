@@ -13,7 +13,7 @@ const
 
   Note: be careful as this action can be difficult to reverse.
 
-  Example:
+  Examples:
 
     fugitive scrap src/foo.nim src/bar.nim
   """

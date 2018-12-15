@@ -13,7 +13,7 @@ const
 
   If the `remove`/`r` flag is provided, the given `key` will be deleted.
 
-  Example:
+  Examples:
 
     fugitive config github.username           # show existing value
     fugitive config github.username citycide  # add or update value

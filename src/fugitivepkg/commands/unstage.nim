@@ -10,7 +10,7 @@ const
   (or `-a`) flag is provided, all currently staged files are unstaged.
   Directories are recursively unstaged.
 
-  Example
+  Examples:
 
     fugitive unstage src/foo.nim src/bar.nim
     fugitive unstage --all

@@ -34,7 +34,7 @@ const
   exclamation character or it may be interpreted by your
   shell.
 
-  Example:
+  Examples:
 
     # list existing aliases
     fugitive alias

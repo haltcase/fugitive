@@ -71,7 +71,7 @@ const
   For more information about the Conventional Commits spec, see:
   https://conventionalcommits.org/
 
-  Example:
+  Examples:
 
     fugitive changelog changelog.md --init        # start new changelog
     fugitive changelog changelog.md --tag:v1.1.0  # update changelog
