@@ -4,8 +4,6 @@ import sugar
 from sequtils import filter
 from terminal import terminalHeight
 
-import gara, unpack
-
 import ../common/columnize
 
 type
