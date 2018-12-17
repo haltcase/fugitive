@@ -9,6 +9,7 @@ type
     Lock
     Mirror
     Open
+    PullRequest
     Profile
     Release
     Scrap
@@ -20,3 +21,4 @@ type
   Arguments* = seq[string]
   Options* = Table[string, string]
   Input* = tuple[args: Arguments, opts: Options]
+  CommandResult* = tuple[output: TaintedString, exitCode: int]

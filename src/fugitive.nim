@@ -11,6 +11,7 @@ import fugitivepkg/commands/[
   lock,
   mirror,
   open,
+  pull_request,
   profile,
   release,
   scrap,
@@ -60,6 +61,7 @@ proc main (command: Command, args: Arguments, opts: Options): int =
     Command.Lock: lock(args, opts)
     Command.Mirror: mirror(args, opts)
     Command.Open: open(args, opts)
+    Command.PullRequest: pullRequest(args, opts)
     Command.Profile: profile(args, opts)
     Command.Release: release(args, opts)
     Command.Scrap: scrap(args, opts)
@@ -81,6 +83,7 @@ proc parseCommand (str: string): Command =
     "lock": Lock
     "mirror" or "clone": Mirror
     "open": Open
+    "pr": PullRequest
     "profile": Profile
     "release": Release
     "scrap": Scrap

@@ -4,6 +4,14 @@ from osproc import execCmdEx
 
 import unpack
 
+template `&&`* (left: CommandResult, right: CommandResult): CommandResult =
+  let tmp = left
+  if tmp.exitCode == 0: right else: tmp
+
+proc removePrefix* (str, prefix: string): string =
+  if str.startsWith(prefix): str[prefix.len..str.high]
+  else: str
+
 proc removeSuffix* (str, suffix: string): string =
   if str.endsWith(suffix): str[0..str.high - suffix.len]
   else: str
