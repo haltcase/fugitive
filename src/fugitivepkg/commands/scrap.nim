@@ -18,19 +18,19 @@ const
   """
 
 proc scrap* (args: Arguments, opts: Options) =
-  if getOptionValue(opts, "h", "help", bool):
+  if opts.get("h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 
   if not isGitRepo(): fail errNotRepo
 
-  if getOptionValue(opts, "a", "all", bool):
+  if opts.get("a", "all", bool):
     match execCmdEx "git reset --hard":
       (_, 0): print "All local changes discarded"
       (@res, _): fail res
     quit 0
 
-  argCheck(args, 1, "File names required.")
+  args.require(1, "File names required.")
 
   match execCmdEx "git checkout -- " & args.mapIt(&"'{it}'").join(" "):
     (_, 0): print "Local changes to files discarded"

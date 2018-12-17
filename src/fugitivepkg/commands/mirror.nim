@@ -31,11 +31,11 @@ const
   """
 
 proc mirror* (args: Arguments, opts: Options) =
-  if getOptionValue(opts, "h", "help", bool) or args.len < 1:
+  if opts.get("h", "help", bool) or args.len < 1:
     echo "\n" & usageMessage
     quit 0
 
-  let dirs = getOptionValue(opts, "d", "directory", string).split ','
+  let dirs = opts.get("d", "directory", string).split ','
 
   var good = 0
   for i, arg in args:

@@ -179,7 +179,7 @@ proc getDestFile (args: Arguments): File =
 
 proc selectFile (args: Arguments, opts: Options): tuple[fd: File, name: string, overwrite: bool] =
   if args.len > 0 and args[0].len > 0:
-    if "init" notin opts and getOptionValue(opts, "o", "overwrite", bool):
+    if "init" notin opts and opts.get("o", "overwrite", bool):
       result = (args[0].open(fmWrite), args[0], true)
     else:
       [fd, name] <- mkstemp(mode = fmWrite)
@@ -274,15 +274,15 @@ proc updateChangelog (
   date = getDateStr()
 ) =
   let
-    newTag = if nextTag != "": nextTag else: getOptionValue(opts, "t", "tag")
+    newTag = if nextTag != "": nextTag else: opts.get("t", "tag")
     repoUrl = getRepoUrl()
     (file, path, overwrite) = selectFile(args, opts)
 
-  if not getOptionValue(opts, "", "no-anchor", bool):
+  if not opts.get("", "no-anchor", bool):
     let anchor = if newTag != "": newTag else: date
     file.output &"<a name=\"{anchor}\"></a>\n"
 
-  let hasTitle = not getOptionValue(opts, "", "no-title", bool)
+  let hasTitle = not opts.get("", "no-title", bool)
   if hasTitle:
     let title = getTitle(newTag, lastTag, repoUrl, date)
     file.output title
@@ -296,7 +296,7 @@ proc updateChangelog (
 
     file.output commit.render(repoUrl) & "\n"
 
-  if not getOptionValue(opts, "", "no-divider", bool):
+  if not opts.get("", "no-divider", bool):
     file.output "\n---\n\n"
 
   if path == "":
@@ -342,7 +342,7 @@ proc initChangelog (args: Arguments, opts: Options) =
   print &"Changelog created ({tagList.len - 1} releases)"
 
 proc changelog* (args: Arguments, opts: Options) =
-  if getOptionValue(opts, "h", "help", bool):
+  if opts.get("h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 
@@ -351,14 +351,14 @@ proc changelog* (args: Arguments, opts: Options) =
   if (execCmdEx cmdFetchTags).exitCode != 0:
     fail "Failed to update tags from remote"
 
-  if getOptionValue(opts, "", "init", bool):
+  if opts.get("", "init", bool):
     initChangelog(args, opts)
     quit 0
 
   let
-    nextTag = getOptionValue(opts, "t", "tag")
+    nextTag = opts.get("t", "tag")
     revEnd = if nextTag == "": "HEAD" else: nextTag
-    lastOpt = getOptionValue(opts, "l", "last-tag")
+    lastOpt = opts.get("l", "last-tag")
     (lastTag, rev) =
       if lastOpt != "":
         (lastOpt, &"{lastOpt}..{revEnd}")

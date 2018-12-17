@@ -22,7 +22,7 @@ const
   """
 
 proc open* (args: Arguments, opts: Options) =
-  if getOptionValue(opts, "h", "help", bool):
+  if opts.get("h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 

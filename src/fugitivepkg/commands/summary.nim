@@ -68,7 +68,7 @@ proc getFileCount (): int =
     _: 0
 
 proc summary* (args: Arguments, opts: Options) =
-  if getOptionValue(opts, "h", "help", bool):
+  if opts.get("h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 

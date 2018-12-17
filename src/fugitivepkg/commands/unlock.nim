@@ -10,14 +10,14 @@ const
   """
 
 proc unlock* (args: Arguments, opts: Options) =
-  if getOptionValue(opts, "h", "help", bool):
+  if opts.get("h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 
   if not isGitRepo():
     fail errNotRepo
 
-  argCheck(args, 1, "File name(s) must be provided.")
+  args.require(1, "File name(s) must be provided.")
 
   match execCmdEx cmdUnlockFile & args.join(" "):
     (_, 0): print "File(s) unlocked."

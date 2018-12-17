@@ -45,12 +45,12 @@ const
   """
 
 proc getRepo (opts: Options, repo: var Option[string]): bool =
-  repo = getOptionValue(opts, "r", "repo")
+  repo = opts.get("r", "repo")
     .resolveRepoUrl("`release` shorthand", baseApi & "repos/")
   result = repo.isSome
 
 proc release* (args: Arguments, opts: Options) =
-  if getOptionValue(opts, "h", "help", bool):
+  if opts.get("h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 
@@ -59,18 +59,18 @@ proc release* (args: Arguments, opts: Options) =
     repo = getRepoUrl().resolveRepoUrl("`release` command")
     if repo.isNone: fail errNotRepo
 
-  argCheck(args, 1, "Tag name must be provided - use `--tag:<tag>`.")
+  args.require(1, "Tag name must be provided - use `--tag:<tag>`.")
 
-  let file = getOptionValue(opts, "f", "file")
+  let file = opts.get("f", "file")
   let token = getEnv("GITHUB_TOKEN")
 
   if token == "":
     fail "A GitHub token is required to modify releases."
 
-  let descFile = getOptionValue(opts, "D", "desc-file")
+  let descFile = opts.get("D", "desc-file")
   let description =
     if descFile != "": descFile.readFile
-    else: getOptionValue(opts, "d", "description")
+    else: opts.get("d", "description")
 
   if file == "":
     var releaseOption: Option[GitHubRelease]
@@ -80,9 +80,9 @@ proc release* (args: Arguments, opts: Options) =
         args[0],
         token,
         description,
-        getOptionValue(opts, "T", "target-commit"),
-        getOptionValue(opts, "N", "draft", bool),
-        getOptionValue(opts, "p", "prerelease", bool)
+        opts.get("T", "target-commit"),
+        opts.get("N", "draft", bool),
+        opts.get("p", "prerelease", bool)
       )
     except GitHubReleaseError as e:
       fail e.msg
@@ -100,9 +100,9 @@ proc release* (args: Arguments, opts: Options) =
         token,
         file,
         description,
-        getOptionValue(opts, "T", "target-commit"),
-        getOptionValue(opts, "N", "draft", bool),
-        getOptionValue(opts, "p", "prerelease", bool)
+        opts.get("T", "target-commit"),
+        opts.get("N", "draft", bool),
+        opts.get("p", "prerelease", bool)
       )
     except GitHubReleaseError as e:
       fail e.msg

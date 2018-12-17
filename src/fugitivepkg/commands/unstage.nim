@@ -15,18 +15,18 @@ const
   """
 
 proc unstage* (args: Arguments, opts: Options) =
-  if getOptionValue(opts, "h", "help", bool):
+  if opts.get("h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 
   if not isGitRepo(): fail errNotRepo
 
-  if getOptionValue(opts, "a", "all", bool):
+  if opts.get("a", "all", bool):
     if (execCmdEx "git reset").exitCode == 0:
       print "Files unstaged"
       quit 0
 
-  argCheck(args, 1, "File names required")
+  args.require(1, "File names required")
 
   [res, code] <- execCmdEx "git reset HEAD " & args.join(" ")
 

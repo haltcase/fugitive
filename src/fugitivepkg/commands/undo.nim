@@ -15,14 +15,14 @@ const
   """
 
 proc undo* (args: Arguments, opts: Options) =
-  if getOptionValue(opts, "h", "help", bool):
+  if opts.get("h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 
   if not isGitRepo(): fail errNotRepo
 
   let num = if args.len >= 1: args[0] else: ""
-  let strategy = if getOptionValue(opts, "H", "hard", bool): "hard" else: "soft"
+  let strategy = if opts.get("H", "hard", bool): "hard" else: "soft"
 
   match execCmdEx &"git reset --{strategy} HEAD^ {num}":
     (_, 0):

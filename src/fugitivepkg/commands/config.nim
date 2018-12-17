@@ -44,7 +44,7 @@ proc config* (args: Arguments, opts: Options) =
     fail "Invalid key"
 
   if args.len == 1:
-    if getOptionValue(opts, "r", "remove", bool):
+    if opts.get("r", "remove", bool):
       remConfigValue(section, key)
       print &"Removed {section}.{key}"
       quit 0

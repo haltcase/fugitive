@@ -32,7 +32,7 @@ proc profileAge* (user: GitHubUser): string =
   result = humanize diff
 
 proc profile* (args: Arguments, opts: Options) =
-  if getOptionValue(opts, "h", "help", bool):
+  if opts.get("h", "help", bool):
     echo "\n" & usageMessage
     quit 0
 

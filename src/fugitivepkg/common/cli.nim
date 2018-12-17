@@ -47,12 +47,12 @@ proc promptResponse* (msg: string): string =
   echo "\n"
   result = stdin.readLine.strip
 
-proc argCheck* (args: seq[string], req: int, msg: string) =
+template require* (args: seq[string], req: int, msg: string) =
   ## Check that the number of arguments meets a required minimum,
   ## printing a failure message and quitting if it does not.
   if args.len < req: fail msg
 
-macro getOptionValue* (opts: Options; shortName, longName: string; T: typedesc = string): untyped =
+macro get* (opts: Options; shortName, longName: string; T: typedesc = string): untyped =
   let typeNode = getTypeImpl(T)
   let returnType = ($typeNode[1]).normalize
   doAssert returnType in ["string", "int", "bool"]
