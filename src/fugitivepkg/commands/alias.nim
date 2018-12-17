@@ -56,7 +56,7 @@ proc getAliasList (pred: (v: string) -> bool = (v: string) => true): AliasList =
   var longest: Longest
   var pairs = newSeq[AliasPair](filtered.len)
   for i, val in filtered:
-    [_, name, expansion] <- split(val, {'.', '='})
+    [_, name, expansion] <- val.split({'.', '='})
 
     let nameLength = max(longest.name, name.len)
     let expLength = max(longest.expansion, expansion.len)
@@ -76,9 +76,9 @@ proc buildRows (pairs: seq[AliasPair], longest: Longest): seq[string] =
     [name, expansion] <- pair
     let spacer = 1.spaces & repeat('.', 6) & 1.spaces
     result.add "$1$2$3" % [
-      align(name, longest.name),
+      name.align(longest.name),
       spacer,
-      align(expansion, longest.expansion)
+      expansion.align(longest.expansion)
     ]
 
 proc alias* (args: Arguments, opts: Options) =
@@ -104,7 +104,7 @@ proc alias* (args: Arguments, opts: Options) =
 
       return
 
-    [pairs, longest] <- getAliasList(v => v.contains args[0])
+    [pairs, longest] <- getAliasList(v => args[0] in v)
     if pairs.len == 0:
       print &"No aliases containing '{args[0]}'"
       return
@@ -118,5 +118,5 @@ proc alias* (args: Arguments, opts: Options) =
       (_, 0):
         print &"Created alias '{args[0]}' = {cmd}"
       (@res, _):
-        let msg = if res != "": indent(res, 2) else: ""
+        let msg = if res != "": res.indent(2) else: ""
         fail &"Could not create alias '{args[0]}'\n{msg}"
