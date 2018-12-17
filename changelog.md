@@ -1,3 +1,18 @@
+<a name="v0.10.0"></a>
+### [`v0.10.0`](https://github.com/citycide/fugitive/compare/v0.9.0...v0.10.0) (2018-12-17)
+
+
+###### BREAKING CHANGES
+
+* the `age` and `repos` commands have been removed in favor of `profile`.
+
+###### FEATURES
+
+* add `pr` command for cloning pull requests ([`5bd116d`](https://github.com/citycide/fugitive/commit/5bd116dffb919fe153a2699e7f99541aba5f89cb))
+* add `profile` command, remove `age` & `repos` ([`612a216`](https://github.com/citycide/fugitive/commit/612a2162b5fe2ff1c03788b3f17d939702e0be43))
+
+---
+
 <a name="v0.9.0"></a>
 ### [`v0.9.0`](https://github.com/citycide/fugitive/compare/v0.8.0...v0.9.0) (2018-10-31)
 
