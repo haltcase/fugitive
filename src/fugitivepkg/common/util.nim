@@ -4,6 +4,8 @@ from osproc import execCmdEx
 
 import unpack
 
+import ../types
+
 template `&&`* (left: CommandResult, right: CommandResult): CommandResult =
   let tmp = left
   if tmp.exitCode == 0: right else: tmp
