@@ -1,3 +1,13 @@
+<a name="v0.10.1"></a>
+### [`v0.10.1`](https://github.com/citycide/fugitive/compare/v0.10.0...v0.10.1) (2019-01-03)
+
+
+###### BUG FIXES
+
+* **config:** make config file path a runtime constant ([`6cb7574`](https://github.com/citycide/fugitive/commit/6cb75748bb6edd16ad4763b265bb23937f13327e))
+
+---
+
 <a name="v0.10.0"></a>
 ### [`v0.10.0`](https://github.com/citycide/fugitive/compare/v0.9.0...v0.10.0) (2018-12-17)
 
