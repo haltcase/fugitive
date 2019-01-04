@@ -1,6 +1,6 @@
 import os, terminal
 
-const
+let
   configFilePath* = getConfigDir() / "fugitive.ini"
 
 # error messages
