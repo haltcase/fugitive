@@ -96,6 +96,7 @@ proc parseCommand (str: string): Command =
 
 when isMainModule:
   [args, opts] <- parseInput()
+
   if args.len == 0 and opts.len == 0:
     showHelp()
     quit 0
@@ -108,5 +109,5 @@ when isMainModule:
     ensure that it has been added to your PATH.
     """.strip
 
-  let cmd = args[0].parseCommand
-  quit main(cmd, args[1..^1], opts)
+  [cmd, *rest] <- args
+  quit main(cmd.parseCommand, rest, opts)
