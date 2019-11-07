@@ -2,16 +2,16 @@ from math import round
 from strutils import join
 
 const
-  second = 1000
-  minute = 60 * second
-  hour = 60 * minute
-  day = 24 * hour
-  year = 365 * day
+  second = 1000u64
+  minute = 60u64 * second
+  hour = 60u64 * minute
+  day = 24u64 * hour
+  year = 365u64 * day
   unitValues = [year, day, hour, minute, second, 1]
   unitLabels = ["y", "d", "h", "m", "s", "ms"]
 
 proc parseToUnits (duration: float): seq[string] =
-  var remainder = (duration * 1000).round.int
+  var remainder = (duration * 1000).round.uint64
   for i, unit in unitValues:
     let count = remainder div unit
     if count == 0: continue
