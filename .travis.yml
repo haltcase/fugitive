@@ -17,24 +17,13 @@ branches:
 
 install:
   - |
-    if [ $TRAVIS_OS_NAME != windows ]; then
-      export CHOOSENIM_CHOOSE_VERSION=stable
-      curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
-      sh init.sh -y
-    fi
-  - |
-    if [ $TRAVIS_OS_NAME == windows ]; then
-      if [ ! -d directory ]; then
-        curl -sS https://nim-lang.org/download/nim-0.19.0_x64.zip > nim.zip
-        7z x nim.zip
-        mv nim-0.19.0 nim
-        mv nim $HOME/
-      fi
-
-      export PATH=$HOME/nim/bin:$PATH
-    fi
-  - export PATH=$HOME/.nimble/bin:$PATH
-  - nimble refresh -y
+    export CHOOSENIM_NO_ANALYTICS=1
+    export CHOOSENIM_CHOOSE_VERSION=stable
+    curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
+    sh init.sh -y
+    export PATH=$HOME/.nimble/bin:$PATH
+    echo "export PATH=$HOME/.nimble/bin:$PATH" >> ~/.profile
+    choosenim $CHANNEL
 
 script:
   - nimble install -y
