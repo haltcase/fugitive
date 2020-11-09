@@ -1,6 +1,6 @@
 include ../base
 
-from os import existsDir
+from os import dirExists
 
 from ../github import resolveRepoURL
 
@@ -46,7 +46,7 @@ proc mirror* (args: Arguments, opts: Options) =
       if dirs.len >= i + 1 and dirs[i].len > 0: dirs[i]
       else: url.get.split('/')[^1]
 
-    if target.existsDir: continue
+    if target.dirExists: continue
 
     [res, code] <- execCmdEx(&"git clone {url.get} {target}")
     if code != 0:

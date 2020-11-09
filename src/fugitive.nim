@@ -1,8 +1,8 @@
-import asyncdispatch, options, os, osproc, parseopt, strformat, strutils, tables
+import options, osproc, parseopt, strformat, strutils, tables
 import gara, unpack
 
-import fugitivepkg/[constants, github, types]
-import fugitivepkg/common/[cli, configfile]
+import fugitivepkg/[constants, types]
+import fugitivepkg/common/cli
 import fugitivepkg/commands/[
   alias,
   changelog,
