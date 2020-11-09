@@ -2,10 +2,11 @@ include ../base
 
 import sugar
 from algorithm import sort
-from os import existsFile, moveFile, tryRemoveFile
+from os import fileExists, moveFile, tryRemoveFile
 from parseutils import parseSaturatedNatural, skipUntil
 from sequtils import keepIf, map, mapIt, toSeq
 from times import getDateStr
+import std/wordwrap
 
 import tempfile
 
@@ -123,7 +124,7 @@ proc parseBody (body: string): tuple[body: string, closures: seq[int], breaking:
     result.body = body[0..<breaks]
 
     let finish = if closes > -1: closes - 1 else: body.high
-    result.breaking = wordWrap(
+    result.breaking = wrapWords(
       body[breaks + breakingSectionStart.len..finish],
       splitLongWords = false
     )
@@ -171,7 +172,7 @@ proc output (dest: File, str: string) =
 
 proc getDestFile (args: Arguments): File =
   if args.len > 0 and args[0].len > 0:
-    if not args[0].existsFile: return stdin
+    if not args[0].fileExists: return stdin
     try:
       return args[0].open(fmRead)
     except IOError:

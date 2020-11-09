@@ -7,7 +7,7 @@ skipExt       = @["nim"]
 binDir        = "dist"
 srcDir        = "src"
 
-requires "nim >= 0.19.0 & < 0.20.0"
+requires "nim >= 1.0.0 & < 2.0.0"
 requires "gara >= 0.2.0"
 requires "tempfile >= 0.1.5"
 requires "unpack >= 0.4.0"

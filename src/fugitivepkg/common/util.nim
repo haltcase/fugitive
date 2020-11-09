@@ -1,5 +1,5 @@
 import options, strformat, strutils
-from os import getCurrentDir, existsDir, splitFile
+from os import getCurrentDir, dirExists, splitFile
 from osproc import execCmdEx
 
 import unpack
@@ -19,7 +19,7 @@ proc removeSuffix* (str, suffix: string): string =
   else: str
 
 proc isGitRepo* (): bool =
-  if not existsDir ".git": return false
+  if not dirExists ".git": return false
   [res] <- execCmdEx "git rev-parse --git-dir"
   result = not res.startsWith "fatal: Not a git repository"
 
