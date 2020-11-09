@@ -23,7 +23,7 @@ install:
     sh init.sh -y
     export PATH=$HOME/.nimble/bin:$PATH
     echo "export PATH=$HOME/.nimble/bin:$PATH" >> ~/.profile
-    choosenim $CHANNEL
+    choosenim stable
 
 script:
   - nimble install -y
