@@ -21,4 +21,4 @@ type
   Arguments* = seq[string]
   Options* = Table[string, string]
   Input* = tuple[args: Arguments, opts: Options]
-  CommandResult* = tuple[output: TaintedString, exitCode: int]
+  CommandResult* = tuple[output: string, exitCode: int]
