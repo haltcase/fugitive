@@ -217,7 +217,7 @@ proc renderDescription (desc, repoUrl: string): string =
   result = desc[0..<openParen]
   var pr: int
   let skips = desc.parseSaturatedNatural(pr, start = openParen + 2)
-  result &= &"([#{pr}]({repoUrl}/pull/{pr}))" & desc[openParen + 2 + skips..^1]
+  result &= &"([#{pr}]({repoUrl}/pull/{pr})" & desc[openParen + 2 + skips..^1]
   if closeParen == -1: result &= ')'
 
 proc render (commit: Commit, repoUrl: string): string =
