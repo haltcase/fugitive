@@ -1,6 +1,7 @@
 import options, strformat, strutils
 from os import getCurrentDir, dirExists, splitFile
 from osproc import execCmdEx
+from parseutils import parseUntil
 
 import unpack
 
@@ -24,9 +25,19 @@ proc isGitRepo* (): bool =
   result = not res.startsWith "fatal: Not a git repository"
 
 proc normalizeGitUrl* (url: string): string =
+  # https://x-access-token:ghs_f39j@github.com/user/repo.git
+  # https://github.com/user/repo.git
+  # git@github.com:user/repo.git
+
+  result.removeSuffix(".git")
+
   if url.startsWith("git@"):
     [_, base, user] <- url.split({'@', ':'})
     result = &"https://{base}/{user}"
+  elif url.contains("x-access-token"):
+    var token: string
+    let charCount = url.parseUntil(token, '@')
+    result = &"https://{url.substr(charCount + 1)}"
   else:
     result = url
 
@@ -34,7 +45,7 @@ proc getRepoUrl* (): string =
   [res, code] <- execCmdEx "git ls-remote --get-url origin"
   if code != 0 or res == "": return ""
 
-  result = res.strip.removeSuffix(".git").normalizeGitUrl
+  result = res.strip.normalizeGitUrl
 
 proc getRepoName* (): string =
   [res, code] <- execCmdEx "git ls-remote --get-url origin"
