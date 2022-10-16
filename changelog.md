@@ -1,3 +1,13 @@
+<a name="v0.11.3"></a>
+### [`v0.11.3`](https://github.com/haltcase/fugitive/compare/v0.11.2...v0.11.3) (2022-10-16)
+
+
+###### BUG FIXES
+
+* revert unpack upgrade ([`5b45cfb`](https://github.com/haltcase/fugitive/commit/5b45cfb802652e1ae26b9acbc8ee5ff38fc010ee))
+
+---
+
 <a name="v0.11.2"></a>
 ### [`v0.11.2`](https://github.com/haltcase/fugitive/compare/v0.11.1...v0.11.2) (2022-10-16)
 
