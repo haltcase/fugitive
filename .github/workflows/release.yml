@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Create release
+    steps:
+      - name: Set variables
+        id: vars
+        run: |
+          echo "name=tag::${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+          echo "name=latest_name::latest" >> $GITHUB_OUTPUT
+
+      - name: Check out main branch
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Cache nimble
+        id: cache-nimble
+        uses: actions/cache@v2
+        with:
+          path: ~/.nimble
+          key: ${{ runner.os }}-nimble
+        if: runner.os != 'Windows'
+      - name: Set up Nim
+        uses: jiro4989/setup-nim-action@v1
+        with:
+          nim-version: stable
+
+      # this is necessary to make retrieving the previous tag possible
+      # without it, the previous tag is somehow the same as the current tag
+      # this seems to be because of actions/checkout@2
+      - name: Clean git tags
+        run: git fetch --prune --unshallow --tags --force
+      - name: Install fugitive
+        run: nimble install -y fugitive
+
+      - name: Create changelog
+        id: changelog
+        run: |
+          TAG=${{ steps.vars.outputs.tag }}
+          LAST_TAG=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))
+
+          fugitive changelog dist/notes.md --tag:${TAG} --last-tag:${LAST_TAG} --no-anchor --no-title --no-divider
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Create release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ steps.vars.outputs.tag }}
+          tag_name: ${{ steps.vars.outputs.tag }}
+          body_path: dist/notes.md
+          prerelease: true
+          files: |
+            dist/fugitive_v*
