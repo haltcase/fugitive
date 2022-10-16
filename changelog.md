@@ -1,3 +1,14 @@
+<a name="v0.11.2"></a>
+### [`v0.11.2`](https://github.com/haltcase/fugitive/compare/v0.11.1...v0.11.2) (2022-10-16)
+
+
+###### BUG FIXES
+
+* remove extra closing parenthesis ([`c3d1314`](https://github.com/haltcase/fugitive/commit/c3d1314d50a0e1a1d0399041179133411e7dc5cc))
+* normalize 'x-access-token' remote URLs ([`c90362e`](https://github.com/haltcase/fugitive/commit/c90362e07bfc2092bc0fc3aeda3c3eb1f8d04ae1))
+
+---
+
 <a name="v0.11.1"></a>
 
 ### [`v0.11.1`](https://github.com/haltcase/fugitive/compare/v0.11.0...v0.11.1) (2020-11-09)
