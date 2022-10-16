@@ -10,7 +10,7 @@ srcDir        = "src"
 requires "nim >= 1.0.0 & < 2.0.0"
 requires "gara >= 0.2.0"
 requires "tempfile >= 0.1.7"
-requires "unpack >= 0.5.0"
+requires "unpack >= 0.4.0"
 
 import ospaths, strformat, strutils
 
