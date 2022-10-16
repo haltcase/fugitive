@@ -25,10 +25,10 @@ const
     fugitive pr 116 -r:upstream
 
     # or from a specific GitHub URL
-    fugitive pr https://github.com/citycide/glob/pull/19
+    fugitive pr https://github.com/haltcase/glob/pull/19
 
     # or from other repositories using GitHub shorthands
-    fugitive pr citycide/glob/pull/19
+    fugitive pr haltcase/glob/pull/19
     fugitive pr glob/pull/19
 
     # delete previously cloned branches

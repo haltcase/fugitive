@@ -41,7 +41,7 @@ const
 
     fugitive release v1.2.1                                 # create release
     fugitive release v1.2.2 --file:myapp_win_x64.zip        # upload asset to release
-    fugitive release v1.2.3 -f:app.zip -r:citycide/fugitive # specify GitHub repo
+    fugitive release v1.2.3 -f:app.zip -r:haltcase/fugitive # specify GitHub repo
   """
 
 proc getRepo (opts: Options, repo: var Option[string]): bool =

@@ -1,5 +1,5 @@
 version       = "0.11.1"
-author        = "citycide"
+author        = "haltcase"
 description   = "Simple command line tool to make git more intuitive, along with useful GitHub addons."
 license       = "MIT"
 bin           = @["fugitive"]

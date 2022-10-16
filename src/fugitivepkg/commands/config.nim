@@ -14,7 +14,7 @@ const
   Examples:
 
     fugitive config github.username           # show existing value
-    fugitive config github.username citycide  # add or update value
+    fugitive config github.username haltcase  # add or update value
     fugitive config github.username -r        # remove the setting
   """
 

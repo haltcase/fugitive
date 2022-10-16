@@ -20,7 +20,7 @@ const
     fugitive profile
 
     # view someone else's profile
-    fugitive profile citycide
+    fugitive profile haltcase
   """
 
 proc repoCount* (user: GitHubUser): int =

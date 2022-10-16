@@ -27,7 +27,7 @@ const
 
   Examples:
 
-    fugitive mirror citycide/glob citycide/cascade citycide/fugitive -d:glob,,fugitive
+    fugitive mirror haltcase/glob haltcase/cascade haltcase/fugitive -d:glob,,fugitive
   """
 
 proc mirror* (args: Arguments, opts: Options) =
