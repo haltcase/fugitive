@@ -55,3 +55,19 @@ after release:
       exec "7z a -tzip " & params
     else:
       exec "tar -czf " & params
+
+task prep_release, "Prepare for release":
+  let
+    fugitive = "fugitive".findExe
+    git = "git".findExe
+
+  if fugitive == "":
+    echo "Could not locate `fugitive` for updating the changelog."
+    echo "Please run `nimble install fugitive` or ensure it is in your PATH."
+  elif git == "":
+    echo "Could not locate `git`. Please install it or ensure it is in your PATH."
+  else:
+    exec &"{fugitive} changelog changelog.md -t:v" & version
+    exec &"{git} add changelog.md fugitive.nimble"
+    exec &"{git} commit -m \"release: " & version & "\""
+    exec &"{git} tag -a v" & version & " -m v" & version
