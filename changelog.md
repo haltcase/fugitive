@@ -1,3 +1,13 @@
+<a name="v0.11.4"></a>
+### [`v0.11.4`](https://github.com/haltcase/fugitive/compare/v0.11.3...v0.11.4) (2024-01-30)
+
+
+###### BUG FIXES
+
+* allow nim v2 ([`1055761`](https://github.com/haltcase/fugitive/commit/1055761217b4335721bf2d4d2bfa8bb910caf854))
+
+---
+
 <a name="v0.11.3"></a>
 ### [`v0.11.3`](https://github.com/haltcase/fugitive/compare/v0.11.2...v0.11.3) (2022-10-16)
 
